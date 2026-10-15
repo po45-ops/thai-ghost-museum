@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>พิพิธภัณฑ์ผีไทย</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pridi:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: Netflix-style browse. Sticky nav, a hero billboard with the featured ghost video, horizontal rows of portrait cards that flip human to ghost on hover, and a detail sheet with video or a human/ghost reveal slider. One committed dark look: a museum hall at night, lamp-amber brand, each ghost brings its own spirit colour. */
+:root{
+  --bg:#0c0a09;
+  --bg2:#14110f;
+  --card:#1c1814;
+  --raise:#272019;
+  --line:#322a24;
+  --ink:#f4ece3;
+  --muted:#a89c90;
+  --lamp:#eab04a;
+  --spirit:#b8f24a;
+  --display:'Pridi','Noto Serif Thai',Georgia,serif;
+  --body:'IBM Plex Sans Thai','Noto Sans Thai',system-ui,sans-serif;
+  --gut:max(16px,env(safe-area-inset-left,0px));
+  --gutr:max(16px,env(safe-area-inset-right,0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+img{display:block}
+:focus-visible{outline:2px solid var(--lamp);outline-offset:2px}
+.gut{padding-left:var(--gut);padding-right:var(--gutr)}
+.inner{max-width:1320px;margin:0 auto}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:30;transition:background .3s;background:linear-gradient(180deg,rgba(12,10,9,.92),rgba(12,10,9,0))}
+.nav.solid{background:rgba(12,10,9,.96);box-shadow:0 1px 0 var(--line)}
+.nav .inner{display:flex;align-items:center;gap:22px;height:60px}
+.logo{font-family:var(--display);font-weight:700;font-size:21px;color:var(--lamp);letter-spacing:.01em;white-space:nowrap}
+.menu{display:flex;gap:4px;min-width:0;overflow-x:auto;scrollbar-width:none;flex:1}
+.menu::-webkit-scrollbar{display:none}
+.menu button{padding:6px 12px;border-radius:999px;color:var(--muted);font-weight:500;font-size:14.5px;white-space:nowrap;transition:color .2s}
+.menu button:hover{color:var(--ink)}
+.menu button[aria-current="true"]{color:var(--ink);font-weight:700}
+.search{display:flex;align-items:center;gap:6px;border:1px solid transparent;border-radius:6px;padding:4px 8px;transition:border-color .2s,background .2s}
+.search.open{border-color:var(--ink);background:rgba(0,0,0,.6)}
+.search svg{flex:0 0 auto}
+.search input{width:0;border:0;outline:0;background:none;color:var(--ink);font:inherit;font-size:14px;transition:width .25s}
+.search.open input{width:min(180px,34vw)}
+.search input::placeholder{color:var(--muted)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:560px;height:min(86vh,800px);overflow:hidden;isolation:isolate;background:var(--bg)}
+.hero-bg{position:absolute;inset:-6%;z-index:-3;width:112%;height:112%;object-fit:cover;filter:blur(16px) brightness(.62) saturate(1.25);transition:opacity .6s}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(46% 72% at 75% 50%,color-mix(in srgb,var(--spirit) 20%,transparent),transparent 72%),linear-gradient(180deg,rgba(0,0,0,.45) 0,transparent 24%,transparent 72%,var(--bg) 100%);transition:background .6s}
+.hero .inner{height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;gap:24px;padding-top:76px;padding-bottom:clamp(36px,7vh,72px)}
+.hero-copy{min-width:0;max-width:600px;display:flex;flex-direction:column;gap:14px;align-self:center}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.16em;color:var(--spirit);text-transform:uppercase}
+.hero h1{margin:0;font-family:var(--display);font-weight:700;font-size:clamp(46px,6.6vw,96px);line-height:1.05;text-wrap:balance;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.hero h1 small{display:block;font-family:var(--body);font-weight:500;font-size:clamp(13px,1.3vw,17px);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--muted)}
+.meta .chip{border:1px solid var(--line);border-radius:4px;padding:0 8px;font-size:12.5px;color:var(--ink);background:rgba(0,0,0,.35)}
+.fear{display:inline-flex;align-items:center;gap:6px;color:var(--ink);font-weight:600;font-size:13px}
+.fear i{display:flex;gap:3px}
+.fear b{width:8px;height:8px;border-radius:50%;background:#4a413a}
+.fear b.on{background:var(--spirit);box-shadow:0 0 8px var(--spirit)}
+.hero p.tag{margin:0;font-size:clamp(15px,1.5vw,19px);line-height:1.55;max-width:46ch;text-shadow:0 2px 16px rgba(0,0,0,.7)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.btn{display:inline-flex;align-items:center;gap:9px;border-radius:6px;padding:10px 24px;font-weight:700;font-size:16px;transition:background .2s,transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.play{background:var(--ink);color:#15110e}
+.btn.play:hover{background:#d8cfc5}
+.btn.info{background:rgba(110,100,92,.55);color:var(--ink);backdrop-filter:blur(6px)}
+.btn.info:hover{background:rgba(110,100,92,.8)}
+.btn svg{flex:0 0 auto}
+.hero-media{position:relative;justify-self:center;height:100%;max-height:100%;aspect-ratio:9/16;max-width:100%;align-self:stretch;margin-top:4px}
+.hero-media .frame{position:absolute;inset:0;border-radius:14px;overflow:hidden;box-shadow:0 20px 70px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.08),0 0 80px color-mix(in srgb,var(--spirit) 22%,transparent);background:#000}
+.hero-media video,.hero-media .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-media .poster{transition:opacity .5s}
+.hero-media .poster.hide{opacity:0}
+.fan{position:absolute;top:10%;height:80%;aspect-ratio:2/3;pointer-events:none}
+.fan img{width:100%;height:100%;object-fit:cover;border-radius:12px;filter:brightness(.62) saturate(1.05);box-shadow:0 18px 50px rgba(0,0,0,.6)}
+.fan span{position:absolute;top:12px;padding:1px 9px;border-radius:4px;background:rgba(0,0,0,.62);font-size:11.5px;font-weight:700;color:#ddd2c6;letter-spacing:.04em}
+.fan.l{left:-50%;transform:rotate(-5deg);transform-origin:50% 100%}.fan.l span{left:12px}
+.fan.r{left:50%;transform:rotate(5deg);transform-origin:50% 100%}.fan.r span{right:12px;color:var(--spirit)}
+.snd{position:absolute;right:12px;bottom:12px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.5);display:grid;place-items:center;backdrop-filter:blur(4px);transition:background .2s}
+.snd:hover{background:rgba(0,0,0,.8)}
+.dots{position:absolute;left:0;right:0;bottom:12px;z-index:2}
+.dots .inner{display:flex;gap:8px}
+.dots button{width:26px;height:4px;border-radius:2px;background:rgba(255,255,255,.28);transition:background .2s,width .2s}
+.dots button[aria-current="true"]{background:var(--ink);width:40px}
+
+/* ---------- rows ---------- */
+main{position:relative;z-index:2;margin-top:-34px;padding-bottom:30px}
+.row{margin-top:clamp(8px,1.6vw,22px)}
+.row h2{margin:0 0 2px;font-size:clamp(17px,1.8vw,22px);font-weight:700;display:flex;align-items:baseline;gap:12px}
+.row h2 span{font-size:12.5px;color:var(--muted);font-weight:500}
+.rail{position:relative}
+.track{--lead:max(var(--gut),calc((100% - 1320px)/2 + var(--gut)));display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;padding-block:14px 20px;padding-left:var(--lead);padding-right:var(--gutr);scroll-padding-left:var(--lead);overscroll-behavior-x:contain}
+.track::-webkit-scrollbar{display:none}
+.track .card{flex:0 0 clamp(132px,14vw,232px);scroll-snap-align:start}
+.arr{position:absolute;top:14px;bottom:18px;width:clamp(36px,4vw,56px);z-index:3;display:grid;place-items:center;background:rgba(12,10,9,.6);opacity:0;transition:opacity .2s;font-size:0}
+.arr.l{left:0}.arr.r{right:0}
+.rail:hover .arr:not(:disabled){opacity:1}
+.arr:disabled{opacity:0;pointer-events:none}
+.arr:hover{background:rgba(12,10,9,.85)}
+@media (hover:none){.arr{display:none}}
+
+.card{position:relative;display:block;aspect-ratio:2/3;border-radius:8px;overflow:hidden;background:var(--card);text-align:left;transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s;--sp:var(--spirit)}
+.card img,.card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card .g{opacity:0;transition:opacity .45s}
+.card video{opacity:0;transition:opacity .3s}
+.card.pv video{opacity:1}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 52%,rgba(0,0,0,.88) 100%);pointer-events:none}
+.card .cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:10px 11px 11px;display:flex;flex-direction:column;gap:2px}
+.card .cap b{font-family:var(--display);font-size:clamp(15px,1.5vw,18px);line-height:1.25;text-wrap:balance}
+.card .cap span{font-size:11.5px;color:#cfc4b9}
+.card .vb{position:absolute;top:8px;left:8px;z-index:2;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.62);border-radius:4px;padding:1px 7px 1px 5px;font-size:11px;font-weight:700;backdrop-filter:blur(4px)}
+.card .vb svg{width:10px;height:10px}
+.card .heart{position:absolute;top:6px;right:6px;z-index:2;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;opacity:0;transition:opacity .2s}
+.card .heart.on{opacity:1;color:var(--lamp)}
+@media (hover:hover){
+  .card:hover{transform:scale(1.07);z-index:4;box-shadow:0 14px 40px rgba(0,0,0,.7),0 0 0 2px color-mix(in srgb,var(--sp) 70%,transparent)}
+  .card:hover .g{opacity:1}
+  .card:hover .heart{opacity:1}
+}
+@media (hover:none){
+  .card .g{animation:flip 7s ease-in-out infinite;animation-delay:calc(var(--i,0)*.9s)}
+}
+@keyframes flip{0%,38%{opacity:0}50%,88%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.card .g{animation:none!important}.card{transition:none}.hero-media .poster{transition:none}}
+
+/* ---------- browse grid (all / region / video / list / search) ---------- */
+.page{padding-top:92px;min-height:80vh}
+.page h1{margin:0 0 6px;font-family:var(--display);font-size:clamp(28px,4vw,42px);line-height:1.15}
+.page .sub{margin:0 0 18px;color:var(--muted);max-width:60ch}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chips button{border:1px solid var(--line);border-radius:999px;padding:5px 15px;font-size:14px;font-weight:500;color:var(--muted);transition:border-color .2s,color .2s,background .2s}
+.chips button:hover{color:var(--ink);border-color:var(--muted)}
+.chips button[aria-pressed="true"]{background:var(--ink);color:#15110e;border-color:var(--ink);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(132px,14vw,220px),1fr));gap:18px 12px;padding-bottom:48px}
+.empty{padding:50px 0;color:var(--muted);text-align:center}
+
+footer{border-top:1px solid var(--line);padding-block:28px 40px;color:var(--muted);font-size:13px;line-height:1.7}
+footer b{color:var(--ink);font-family:var(--display);font-size:15px}
+footer p{margin:6px 0 0;max-width:80ch}
+
+/* ---------- detail sheet ---------- */
+.modal{position:fixed;inset:0;z-index:60;display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;background:rgba(0,0,0,.78);backdrop-filter:blur(4px);padding:max(28px,env(safe-area-inset-top,0px)) var(--gutr) 28px var(--gut);animation:fade .25s ease}
+@keyframes fade{from{opacity:0}}
+.sheet{position:relative;width:min(1040px,100%);background:var(--card);border-radius:12px;box-shadow:0 30px 100px rgba(0,0,0,.8);overflow:clip;animation:rise .35s cubic-bezier(.2,.8,.2,1);--sp:var(--spirit)}
+@keyframes rise{from{transform:translateY(24px) scale(.97);opacity:0}}
+.sheet-x{position:absolute;top:12px;right:12px;z-index:8;width:38px;height:38px;border-radius:50%;background:rgba(20,17,15,.85);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
+.sheet-x:hover{background:#000}
+.sheet-in{display:grid;grid-template-columns:minmax(260px,380px) minmax(0,1fr)}
+.mcol{position:relative;background:#050403;padding:22px;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start}
+.mcol::before{content:"";position:absolute;inset:0;background:radial-gradient(90% 60% at 50% 30%,color-mix(in srgb,var(--sp) 26%,transparent),transparent 70%);pointer-events:none}
+.stick{position:sticky;top:22px;width:100%;display:flex;flex-direction:column;gap:12px;align-items:center}
+.mstage{position:relative;width:100%;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.1);touch-action:pan-y}
+.mstage video,.mstage .cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.cmp{position:absolute;inset:0}
+.cmp .gst{clip-path:inset(0 calc(100% - var(--p,50%)) 0 0)}
+.cmp .line{position:absolute;top:0;bottom:0;left:var(--p,50%);width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 12px rgba(0,0,0,.7)}
+.cmp .knob{position:absolute;top:50%;left:var(--p,50%);width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:#fff;color:#15110e;display:grid;place-items:center;box-shadow:0 2px 14px rgba(0,0,0,.6)}
+.cmp .lbl{position:absolute;top:10px;padding:2px 9px;border-radius:4px;font-size:12px;font-weight:700;background:rgba(0,0,0,.6)}
+.cmp .lbl.a{left:10px;color:var(--sp)}.cmp .lbl.b{right:10px}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.soon{position:absolute;left:10px;right:10px;bottom:10px;z-index:3;padding:7px 10px;border-radius:6px;background:rgba(0,0,0,.7);font-size:12.5px;text-align:center;color:#e5dacd;backdrop-filter:blur(4px)}
+.vbar{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:center;gap:10px;padding:26px 12px 10px;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent)}
+.vbar button{width:32px;height:32px;display:grid;place-items:center;border-radius:50%}
+.vbar button:hover{background:rgba(255,255,255,.18)}
+.vbar input[type=range]{flex:1;min-width:0;accent-color:var(--sp);height:4px}
+.vtap{position:absolute;inset:0;z-index:2}
+.seg{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.08);position:relative;z-index:2}
+.seg button{padding:5px 15px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#15110e}
+.icol{padding:30px 32px 32px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.icol h2{margin:0;font-family:var(--display);font-size:clamp(30px,4vw,44px);line-height:1.1;padding-right:36px}
+.icol .en{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--sp);font-weight:700;margin-bottom:6px}
+.icol .lede{margin:0;font-size:17px;line-height:1.6;max-width:52ch}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mood{border-radius:10px;padding:13px 15px;background:var(--bg2);border:1px solid var(--line);font-size:14.5px;line-height:1.65}
+.mood h3{margin:0 0 4px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;color:var(--muted)}
+.mood.night{background:linear-gradient(160deg,#0f1218,var(--bg2));border-color:color-mix(in srgb,var(--sp) 35%,var(--line))}
+.mood.night h3{color:var(--sp)}
+.facts{display:grid;gap:14px}
+.facts h3{margin:0 0 2px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.facts p{margin:0;max-width:62ch;font-size:15px}
+.refs{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px}
+.refs a{color:var(--lamp);text-underline-offset:3px}
+.more h3{margin:6px 0 10px;font-size:17px}
+.mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.mini .card{aspect-ratio:2/3}
+.mini .card .cap{padding:6px 7px 7px}
+.mini .card .cap b{font-size:13.5px}
+.mini .card .cap span,.mini .vb{display:none}
+
+@media (max-width:1100px){.hero-media .fan{display:none}}
+@media (max-width:860px){
+  .hero{height:auto;min-height:0}
+  .hero .inner{grid-template-columns:1fr;gap:0;padding-top:64px;padding-bottom:56px;align-items:start}
+  .hero-media{order:-1;height:auto;width:min(58vw,300px);max-height:none;margin:0 auto 18px}
+  .hero-copy{max-width:none;align-self:auto}
+  .hero::before{background:radial-gradient(80% 36% at 50% 24%,color-mix(in srgb,var(--spirit) 22%,transparent),transparent 72%),linear-gradient(180deg,rgba(0,0,0,.3) 0,transparent 30%,var(--bg) 100%)}
+  .hero h1{font-size:clamp(38px,11vw,56px)}
+  .dots{bottom:6px}.dots .inner{justify-content:center}.hero-media .fan{display:none}
+  main{margin-top:-8px}
+  .logo{font-size:18px}
+  .nav .inner{gap:10px}
+  .sheet-in{grid-template-columns:1fr}
+  .mcol{padding:58px 16px 14px}.stick{position:static}
+  .mstage{width:min(100%,calc(62vh*9/16))}
+  .icol{padding:20px 18px 26px}
+  .modal{padding-top:max(10px,env(safe-area-inset-top,0px));padding-bottom:0}
+  .sheet{border-radius:12px 12px 0 0;min-height:100%}
+}
+@media (max-width:520px){
+  .two{grid-template-columns:1fr}
+  .menu button{padding:6px 9px;font-size:14px}
+  .btn{padding:9px 18px;font-size:15px}
+}
+</style>
+
+</head><body>
+<header class="nav" id="nav">
+  <div class="inner gut">
+    <button class="logo" id="logo" aria-label="พิพิธภัณฑ์ผีไทย กลับหน้าแรก">พิพิธภัณฑ์ผีไทย</button>
+    <nav class="menu" id="menu" aria-label="เมนูหลัก"></nav>
+    <div class="search" id="search">
+      <button id="sBtn" aria-label="ค้นหาผี"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button>
+      <input id="q" type="search" placeholder="ค้นหาชื่อผี" autocomplete="off" aria-label="ค้นหาชื่อผี">
+    </div>
+  </div>
+</header>
+
+<div id="app"></div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
+
+<script>
+/* ---------------- data ---------------- */
+const REGIONS=['ภาคกลาง','ภาคเหนือ','ภาคอีสาน','ภาคใต้','ทั่วไทย'];
+const G=[
+{n:'01',id:'krasue',name:'กระสือ',en:'Krasue',kind:'ผีผู้หญิง · ผีกลางคืน',where:'ภาคกลาง (เหนือและอีสานมี "ผีโพง" ที่คล้ายกัน)',region:'ภาคกลาง',fear:4,spirit:'#b8f24a',video:'01',
+ tag:'หัวลอยกลางคืน ไส้เรืองแสงวาบเขียว ใครในหมู่บ้านก็อาจเป็นเธอ',
+ human:'ตอนกลางวันใช้ชีวิตปะปนกับชาวบ้าน มักหน้าซีด ขอบตาคล้ำ เก็บตัว และไม่ค่อยสบตาใคร',
+ ghost:'ตกดึก หัวจะหลุดจากคอพร้อมไส้ ตับ และไต ลอยออกไปหากิน ทิ้งร่างไร้หัวไว้บนที่นอน ชาวบ้านเห็นเป็นดวงไฟสีเขียววาบ ๆ',
+ origin:'กระสือไม่ใช่วิญญาณคนตาย แต่เป็นคนเป็น ๆ ที่ได้รับเชื้อ เชื่อว่าส่งต่อทางน้ำลาย เมื่อกระสือแก่ตัวจะถ่ายทอดให้หญิงในตระกูล',
+ belief:'ชอบของสดของคาวและของสกปรก ว่ากันว่าเช็ดปากกับผ้าที่ตากค้างคืน ถ้าเอาผ้าที่มีรอยเปื้อนไปต้ม กระสือจะแสบปากจนต้องมาขอร้อง',
+ guard:'สุมหนามพุทราไว้ใต้ถุนเรือน เพราะกระสือกลัวหนามเกี่ยวไส้ และเก็บผ้าที่ตากไว้ก่อนค่ำ',
+ refs:[['ศิลปวัฒนธรรม','https://www.silpa-mag.com/?p=101789'],['แนวหน้า','https://www.naewna.com/n/?p=78008']]},
+{n:'02',id:'krahang',name:'กระหัง',en:'Krahang',kind:'ผีผู้ชาย · คู่ของกระสือ',where:'ภาคกลาง',region:'ภาคกลาง',fear:3,spirit:'#9fe06a',
+ tag:'ขี่สากตำข้าว ใช้กระด้งเป็นปีก บินหากินในความมืด',
+ human:'ตอนกลางวันเป็นชายชาวบ้านธรรมดา ชอบเก็บตัวอยู่ในที่มืด ปิดหน้าต่างมิดชิด',
+ ghost:'กลางคืนใช้กระด้งฝัดข้าวสองใบเป็นปีก ขี่สากตำข้าวเป็นพาหนะ บินออกหากินในความมืด ดวงตาเรืองแสง',
+ origin:'เชื่อว่าเป็นผู้ชายที่เล่นไสยศาสตร์แล้วคุมอาคมไม่ได้ หรือผิดสัญญากับครูวิชา คนโบราณเรียกว่า "กระหาง"',
+ belief:'บางตำราเล่าว่ากระหังมีหางที่ก้น จึงหวงก้นมาก และมักออกบินเป็นคู่ ตาเรืองแสงวาบเหมือนฟ้าแลบ',
+ guard:'ตำนานไม่ได้บอกวิธีป้องกันไว้ชัด แต่เล่าว่าหมอผีมักตามล่ากระหังเพื่อชิงวิชาอาคมของมัน',
+ refs:[['ศิลปวัฒนธรรม','https://www.silpa-mag.com/?p=101789'],['Wikipedia','https://en.wikipedia.org/wiki/Krahang']]},
+{n:'03',id:'maenak',name:'แม่นาคพระโขนง',en:'Mae Nak Phra Khanong',kind:'ผีผู้หญิง · ตำนานความรัก',where:'พระโขนง กรุงเทพฯ',region:'ภาคกลาง',fear:4,spirit:'#8fd6d0',video:'03',
+ tag:'ตำนานรักข้ามภพ ที่ยื่นมือยาวลงใต้ถุนเรือนเก็บมะนาว',
+ human:'นางนาคเป็นหญิงสาวย่านพระโขนง ภรรยาของนายมาก ซึ่งถูกเกณฑ์ไปเป็นทหารตอนเธอตั้งท้อง',
+ ghost:'นาคตายทั้งกลมพร้อมลูกขณะคลอด แต่ด้วยความรักจึงไม่ยอมจากไป ยังรอนายมากอยู่ที่บ้านในร่างผี',
+ origin:'ตำนานจากย่านพระโขนง กรุงเทพฯ เป็นเรื่องผีไทยที่ถูกเล่าซ้ำและสร้างเป็นละครกับภาพยนตร์มากที่สุดเรื่องหนึ่ง',
+ belief:'แม่นาคทำมะนาวหล่นใต้ถุนบ้าน แล้วยื่นมือยาวลงไปเก็บ นายมากเห็นจึงรู้ความจริง หนีไปหลบหลังกอหนาด แล้วเข้าไปในวัดมหาบุศย์ที่ผีเข้าไม่ได้',
+ guard:'ตำนานเล่าว่าสมเด็จพระพุฒาจารย์ปลอบให้นาคยอมไปเกิด ปัจจุบันผู้คนไปไหว้ศาลแม่นาคที่วัดมหาบุศย์ ถวายชุดไทยและของเล่นเด็ก ขอพรเรื่องความรักและโชคลาภ',
+ refs:[['Thailex','https://thailex.info/THAILEX/THAILEXENG/LEXICON/Thailand%20Lexicon%20-%20Nang%20Nak%20or%20Naang%20Naak%20(%E0%B8%99%E0%B8%B2%E0%B8%87%E0%B8%99%E0%B8%B2%E0%B8%81),%20Mae%20Nak%20(or%20Naak)%20Phra%20Khanong%20(%E0%B9%81%E0%B8%A1%E0%B9%88%E0%B8%99%E0%B8%B2%E0%B8%81%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B9%82%E0%B8%82%E0%B8%99%E0%B8%87).htm']]},
+{n:'04',id:'takhian',name:'นางตะเคียน',en:'Nang Takhian',kind:'ผีนางไม้ · วิญญาณในต้นตะเคียน',where:'ทั่วประเทศ',region:'ทั่วไทย',fear:2,spirit:'#e0a35a',
+ tag:'นางไม้แห่งต้นตะเคียนใหญ่ ผู้ลงโทษคนที่ลบหลู่ป่า',
+ human:'มักปรากฏเป็นหญิงสาวสวยในชุดไทยโบราณโทนแดงน้ำตาล ต่างจากนางตานีที่มักใส่ชุดสีเขียว',
+ ghost:'วิญญาณผูกพันกับต้นตะเคียน ชายผ้าซิ่นกลืนเป็นรากไม้ มีผ้าแพรหลากสีพันรอบตัวเหมือนผ้าที่คนผูกไว้รอบต้น',
+ origin:'เชื่อกันว่าต้นตะเคียนใหญ่มีนางไม้สิงอยู่ บ้านที่ใช้เสาหรือคานไม้ตะเคียน และเรือที่ทำจากไม้ตะเคียน ก็อาจมีนางตะเคียนตามมาด้วย',
+ belief:'นางตะเคียนไม่ทำร้ายคนดี แต่ลงโทษคนที่ประพฤติไม่ดีหรือตัดต้นไม้ของเธอโดยไม่ขออนุญาต ปัจจุบันหลายคนมาขอโชคลาภ',
+ guard:'ผูกผ้าแพรหลากสีรอบต้น ถวายของบูชา และทำพิธีขออนุญาตก่อนตัดต้นตะเคียน',
+ refs:[['Wikipedia','https://en.wikipedia.org/wiki/Nang_Ta-khian']]},
+{n:'05',id:'tani',name:'นางตานี',en:'Nang Tani',kind:'ผีนางไม้ · วิญญาณในกล้วยตานี',where:'พบในความเชื่อหลายภาค',region:'ทั่วไทย',fear:2,spirit:'#7fe3a8',
+ tag:'นางไม้แห่งกล้วยตานี ผีสวยในชุดเขียวใต้แสงจันทร์',
+ human:'มักปรากฏเป็นหญิงสาวสวยในชุดสีเขียว ผมยาว ท่าทีอ่อนโยน',
+ ghost:'ตอนกลางคืนตัวโปร่งแสงสีเขียวอ่อน ลอยอยู่ข้างกอกล้วยตานีใต้แสงจันทร์ เท้าไม่แตะพื้น',
+ origin:'เชื่อกันว่ากล้วยตานีต้นใหญ่ โดยเฉพาะต้นที่ออกเครือ มีนางไม้สถิตอยู่ จึงห้ามตัดหรือลบหลู่',
+ belief:'คนโบราณผูกผ้าแพรสีต่าง ๆ ไว้ที่ต้นกล้วยตานีเพื่อขออนุญาต และเล่าว่าผู้ที่ตัดโดยไม่บอกกล่าวมักเจอเรื่องไม่ดี',
+ guard:'ไม่ตัดต้นกล้วยตานีใหญ่โดยไม่จำเป็น ถ้าต้องตัดให้บอกกล่าวขออนุญาตก่อน',refs:[]},
+{n:'06',id:'takhon',name:'ผีตาโขน',en:'Phi Ta Khon',kind:'ผีในประเพณี · งานบุญหลวง',where:'อำเภอด่านซ้าย จังหวัดเลย',region:'ภาคอีสาน',fear:1,spirit:'#ff9f43',
+ tag:'ผีหน้ากากสีสดที่ออกมาเต้นรำกลางเมืองด่านซ้าย',
+ human:'ชาวบ้านธรรมดาในชุดเสื้อผ้าสบาย ๆ ที่เตรียมหน้ากากไว้สำหรับวันงาน',
+ ghost:'เมื่อสวมหน้ากากจากโคนก้านมะพร้าวและหวดนึ่งข้าวเหนียว ห่มผ้าปะหลากสี ห้อยกระดิ่งไม้ ก็กลายเป็นผีตาโขนที่ออกมาเต้นรำ',
+ origin:'เป็นส่วนหนึ่งของงานบุญหลวงที่ด่านซ้าย เล่าสืบกันว่าผีตาโขนคือผีและวิญญาณที่ตามขบวนพระเวสสันดรกลับเมือง',
+ belief:'ผีตาโขนไม่ได้ออกมาหลอกคน แต่ออกมาสนุกสนานและเข้าไปแหย่ผู้คน ผู้ชมถือว่าเป็นงานบุญและความสนุก',
+ guard:'ไม่ต้องกลัว ให้ไปดูงานและสนุกไปด้วย หากอยากชมให้ไปช่วงจัดงานบุญหลวงที่ด่านซ้าย',refs:[]},
+{n:'07',id:'kongkoi',name:'ผีกองกอย',en:'Phi Kong Koi',kind:'ผีป่า · ผีเท้าเดียว',where:'ภาคอีสานและเหนือ รวมถึงฝั่งลาว',region:'ภาคอีสาน',fear:3,spirit:'#d9a066',
+ tag:'ผีป่าขาเดียว เล่ากันว่าส้นเท้ากลับหลัง คอยย่องหาคนนอนในป่า',
+ human:'เล่ากันว่ามีรูปร่างคล้ายเด็กตัวเล็ก ผิวคล้ำ ผมยาวรุงรัง ท้องป่อง ดูซื่อ ๆ ตอนกลางวัน',
+ ghost:'ตอนกลางคืนกระโดดด้วยขาเดียว ส้นเท้าอยู่ด้านหน้า ผมปรกหน้า ตาเรืองแสง ย่องเข้าหาคนที่นอนหลับในป่า',
+ origin:'เป็นผีป่าในความเชื่อของคนอีสานและภาคเหนือ เรื่องเล่ามีหลายสำนวนตามท้องถิ่น',
+ belief:'เล่ากันว่าเสียงร้องคล้าย "กอย ๆ" และชอบดูดเลือดจากปลายเท้าของคนที่หลับในป่า',
+ guard:'คนเข้าป่ามักถือคติไม่พูดลบหลู่ในป่า และก่อกองไฟนอนเป็นกลุ่ม',refs:[]},
+{n:'08',id:'langkluang',name:'ผีหลังกลวง',en:'Phi Lang Kluang',kind:'ผีผู้หญิง · ผีล่อลวง',where:'เล่าต่อกันหลายภาค',region:'ทั่วไทย',fear:4,spirit:'#b49aff',
+ tag:'หญิงสาวสวยที่หันหลังแล้วเห็นเป็นโพรงกลวง',
+ human:'หญิงสาวสวย ผมเกล้าเรียบร้อย แต่งกายสุภาพ ยิ้มหวานและชวนคุยกับชายที่เดินผ่าน',
+ ghost:'เมื่อหันหลังหรือเหลียวมอง จะเห็นหลังเป็นโพรงกลวงมืดดำ มีหนอนไต่ยั้วเยี้ย ผมสยายและยิ้มเย็นชา',
+ origin:'เป็นผีหญิงในเรื่องเล่าพื้นบ้าน ใช้เตือนไม่ให้หลงเชื่อรูปลักษณ์ภายนอกและไม่เดินป่าหรือเดินทางเปลี่ยวยามค่ำ',
+ belief:'เล่ากันว่าผีหลังกลวงจะชวนชายหนุ่มไปด้วยกัน และมักถูกจับได้เพราะอีกด้านหนึ่งของร่าง',
+ guard:'ไม่เดินทางลำพังยามวิกาล และไม่คล้อยตามคนแปลกหน้าที่ชวนไปที่เปลี่ยว',refs:[]},
+{n:'09',id:'mabong',name:'ผีม้าบ้อง',en:'Phi Ma Bong',kind:'ผีล้านนา · ชายครึ่งม้า',where:'ภาคเหนือ (ล้านนา)',region:'ภาคเหนือ',fear:3,spirit:'#ff6a4d',
+ tag:'ชายครึ่งม้าที่วิ่งผ่านถนนยามค่ำ ตาแดงเรืองไฟ',
+ human:'ชายหนุ่มล้านนาในเสื้อม่อฮ่อม สวมผ้าคาดเอว เดินอยู่บนถนนหมู่บ้านตอนกลางวัน',
+ ghost:'ในเรื่องเล่า ร่างเปลี่ยนเป็นครึ่งคนครึ่งม้า ตาแดงเรืองไฟ ควบวิ่งตามถนนริมน้ำท่ามกลางหมอกและฝุ่น',
+ origin:'เป็นผีในความเชื่อของคนล้านนา ที่มาของเรื่องมีหลายสำนวนและบางสำนวนต่างกัน',
+ belief:'เล่ากันว่าผู้ที่พบมักได้ยินเสียงกีบม้าก่อนจะเห็นร่าง ในยามค่ำคืนที่เงียบ',
+ guard:'เลี่ยงเดินทางตามลำพังบนถนนเปลี่ยวยามค่ำ',refs:[]},
+{n:'10',id:'kuman',name:'กุมารทอง',en:'Kuman Thong',kind:'วิญญาณเด็ก · ผีเลี้ยงนำโชค',where:'พบในความเชื่อทั่วประเทศ',region:'ทั่วไทย',fear:2,spirit:'#ffc94d',
+ tag:'เด็กน้อยสีทองที่ผู้เลี้ยงต้องดูแล แลกกับโชคลาภ',
+ human:'เด็กชายตัวน้อยผมจุก สวมผ้าโจงกระเบนสีแดงทอง สวมกำไลข้อเท้า ยิ้มซุกซนและร่าเริง',
+ ghost:'ร่างเรืองสีทอง ลอยนั่งขัดสมาธิ มีสายสิญจน์พันรอบตัว ข้าง ๆ มีน้ำแดง ขนม และของเล่นถวายบนหิ้ง',
+ origin:'เป็นวิญญาณเด็กที่ผู้เลี้ยงเชื่อว่าอัญเชิญมาเป็นผู้ปกปักรักษา กุมารทองที่รู้จักกันมากมาจากตอนขุนแผนในเรื่องขุนช้างขุนแผน',
+ belief:'เล่ากันว่ากุมารทองชอบของเล่นและน้ำแดง ผู้เลี้ยงต้องดูแลสม่ำเสมอ ถ้าละเลยอาจเกิดเรื่องไม่ดี',
+ guard:'ไม่ลบหลู่ ไม่หยอกล้อ และปฏิบัติต่อหิ้งบูชาด้วยความเคารพ',refs:[]},
+{n:'11',id:'khwaithanu',name:'ควายธนู',en:'Khwai Thanu',kind:'วัตถุเวท · ควายเสกจากไม้',where:'เล่าในภาคกลางและอีสาน',region:'ทั่วไทย',fear:4,spirit:'#ffb23f',
+ tag:'ควายแกะจากไม้ ที่เสกให้มีชีวิตเพื่อขวิดศัตรู',
+ human:'หมอผีผู้เฒ่านุ่งขาว มีรอยสักยันต์ตามแขน ถือควายไม้เล็ก ๆ ปิดทองไว้ในอุ้งมือ',
+ ghost:'เมื่อเสกคาถา ควายไม้กลายเป็นควายยักษ์ดำ เขาโค้ง ตาแดง มีอักขระทองเรืองบนตัว พุ่งทะลุควันเข้าหาเป้าหมาย',
+ origin:'เป็นความเชื่อด้านไสยศาสตร์ เล่ากันว่าหมอเวทแกะควายจากไม้แล้วลงอักขระและเสกให้มีชีวิต',
+ belief:'ใช้ปกป้องผู้ครอบครองหรือไล่ศัตรู ควายธนูจะกลับเป็นไม้เมื่อจบภารกิจ',
+ guard:'เล่ากันว่าต้องมีหมอเวทที่แก่กล้าแก้ไข ถ้าไม่เจอผู้รู้ก็ควรเลี่ยงการยุ่งเกี่ยว',refs:[]},
+{n:'12',id:'pret',name:'เปรต',en:'Pret',kind:'ผีในพุทธศาสนา · ผู้ได้รับกรรม',where:'ทั่วไทย (ชิงเปรตที่ภาคใต้)',region:'ทั่วไทย',fear:3,spirit:'#c7b79a',
+ tag:'ผู้ตระหนี่ที่เกิดใหม่เป็นเปรต ตัวสูง ปากเท่ารูเข็ม',
+ human:'ชายผู้ร่ำรวยแต่งกายภูมิฐาน กอดถุงเหรียญทองแน่น ท่าทางเห็นแก่ตัว',
+ ghost:'เกิดใหม่เป็นเปรต ตัวสูงใหญ่ผอมแห้ง คอยาว ปากเล็กเท่ารูเข็ม ท้องหิวไม่รู้จบ ยืนอยู่หลังกำแพงวัด',
+ origin:'เปรตเป็นภพภูมิหนึ่งตามคติพุทธ เล่าว่าผู้ที่ตระหนี่หรือทำบาปจะไปเกิดเป็นเปรต หิวโหยตลอดเวลา',
+ belief:'เปรตจะรับส่วนบุญที่ลูกหลานทำให้ ประเพณีสารทเดือนสิบ รวมถึงชิงเปรตทางภาคใต้ จึงทำบุญอุทิศให้บรรพบุรุษ',
+ guard:'ทำบุญอุทิศส่วนกุศลให้ผู้ล่วงลับ และฝึกความเอื้อเฟื้อ',refs:[]},
+{n:'13',id:'pop',name:'ผีปอบ',en:'Phi Pop',kind:'ผีสิงคน · ผีกินของดิบ',where:'ภาคอีสานและเหนือ',region:'ภาคอีสาน',fear:5,spirit:'#ff5b5b',
+ tag:'ผีที่สิงในร่างคน ชอบของดิบ หมอธรรมต้องมาไล่',
+ human:'หญิงชราใจดีในหมู่บ้านอีสาน ผมสั้นสีเทา ใส่ผ้าซิ่นลายมัดหมี่ ถือกระติบข้าวเหนียว',
+ ghost:'เมื่อถูกปอบเข้าสิง ตาแดงก่ำ ผมชี้ฟู ลิ้นยาว คลานสี่ขาในครัวมืด แย่งกินไก่ดิบ',
+ origin:'เชื่อกันว่าปอบเป็นผีที่สิงอยู่ในร่างคนผู้มีวิชาอาคมผิดข้อห้าม หรือรับเชื้อต่อกันมา',
+ belief:'เล่ากันว่าปอบชอบกินของดิบและสัตว์เล็ก ผู้ที่ถูกปอบเข้าสิงจะป่วยหนัก หมอธรรมจะทำพิธีขับไล่',
+ guard:'ให้หมอธรรมหรือผู้รู้ประจำท้องถิ่นทำพิธี และไม่ใส่ร้ายผู้อื่นว่าเป็นปอบ',refs:[]},
+{n:'14',id:'phong',name:'ผีโพง',en:'Phi Phong',kind:'ผีกลางคืน · ผีไฟในจมูก',where:'ภาคอีสานและล้านนา',region:'ภาคอีสาน',fear:3,spirit:'#ffa14d',
+ tag:'แสงไฟวูบวาบในจมูก ออกหากินริมหนองน้ำยามค่ำ',
+ human:'ชายวัยกลางคนธรรมดาในหมู่บ้าน แต่งกายซอมซ่อ ถือกระถางต้นว่านสีขาว ยืนข้างหนองน้ำตอนเย็น',
+ ghost:'ตอนกลางคืนมีเปลวไฟวูบวาบอยู่ในรูจมูก ยางเหนียวคล้ายขี้ผึ้งไหลลงตัว ย่องหากินสัตว์เล็กริมหนองน้ำ',
+ origin:'เป็นผีในความเชื่อของภาคอีสานและล้านนา เล่ากันว่าเกิดจากการเลี้ยงว่านบางชนิด และมีลักษณะคล้ายกระสือ',
+ belief:'เล่ากันว่าชาวบ้านเห็นแสงวูบวาบริมหนองน้ำยามค่ำ แล้วเชื่อว่าเป็นผีโพงออกหากิน',
+ guard:'เลี่ยงออกไปตามหนองน้ำในยามค่ำคืนตามลำพัง',refs:[]},
+{n:'15',id:'saming',name:'เสือสมิง',en:'Suea Saming',kind:'สัตว์ศักดิ์สิทธิ์ · เสือแปลงกาย',where:'เล่ากันในเขตป่า',region:'ทั่วไทย',fear:4,spirit:'#ffa733',
+ tag:'เสือเฒ่าผู้แปลงกายเป็นคน และมีดวงตาเหมือนมนุษย์',
+ human:'นายพรานผู้ชำนาญป่า มีรอยสักยันต์ สร้อยเขี้ยวเสือ ผ้าคาดหัวสีแดง ถือหอก',
+ ghost:'แปลงร่างเป็นเสือใหญ่ ยืนกึ่งสองขา ตามีแววเหมือนคน รอยสักยันต์เรืองทองผ่านลายขน สวมสร้อยเขี้ยวเสือ',
+ origin:'เชื่อกันว่าเสือที่มีอายุมากหรือกินคนมามาก จะมีอิทธิฤทธิ์ แปลงร่างเป็นคนได้ เรียกว่าเสือสมิง',
+ belief:'ในบางเรื่องเล่าเป็นคนที่เรียนวิชาแปลงร่างเป็นเสือ เมื่อเข้าป่าลึกก็กลายเป็นเสือ',
+ guard:'คนเข้าป่ามักเคารพเจ้าป่า ไม่ลบหลู่ และไม่เดินป่าตามลำพัง',refs:[]},
+{n:'16',id:'huakhat',name:'ผีหัวขาด',en:'Phi Hua Khat',kind:'ผีทหารและนักโทษ · ผีไร้ศีรษะ',where:'เล่าในหลายภาค',region:'ทั่วไทย',fear:4,spirit:'#9ab5d9',
+ tag:'ทหารไร้ศีรษะที่เดินอุ้มหัวตัวเองกลางกำแพงเมืองเก่า',
+ human:'ทหารกรุงศรีอยุธยาผู้กล้า สวมเสื้อแดง ผ้าโจงกระเบน ผ้าคาดหัวสีแดง ถือดาบและโล่',
+ ghost:'ร่างโปร่งแสงไร้ศีรษะ อุ้มหัวตัวเองไว้ใต้แขน ตาของหัวลืมโพลงเรืองแสง ยืนอยู่บนกำแพงเมืองเก่ากลางหมอก',
+ origin:'เชื่อกันว่าเป็นวิญญาณของผู้ที่ถูกตัดศีรษะ เช่นทหารในสงครามหรือผู้ต้องโทษ',
+ belief:'เล่ากันว่าเดินวนหาที่ฝังร่างของตน และมักปรากฏในที่ที่เคยเป็นสนามรบเก่า',
+ guard:'ทำบุญอุทิศส่วนกุศลให้ผู้เสียชีวิตในสงคราม และเคารพสถานที่ประวัติศาสตร์',refs:[]},
+{n:'17',id:'pusom',name:'ปู่โสมเฝ้าทรัพย์',en:'Pu Som Fao Sap',kind:'ผีเฝ้าสมบัติ · วิญญาณผู้พิทักษ์',where:'พบในเรื่องเล่าขุดสมบัติ',region:'ทั่วไทย',fear:2,spirit:'#9fd8ff',
+ tag:'ปู่ผู้เฝ้าไหเงินไหทอง ใต้ซากเจดีย์',
+ human:'ผู้เฒ่าใจดีหนวดเคราขาว ผมขาวเกล้ามวย นุ่งผ้าขาว ถือไม้เท้า ยิ้มอบอุ่น',
+ ghost:'ตัวโปร่งแสงเรืองสีขาวอมฟ้า นั่งขัดสมาธิบนไหโบราณที่ล้นด้วยเหรียญทอง มีงูศักดิ์สิทธิ์ขดอยู่ข้างกาย',
+ origin:'ตามเรื่องเล่า ผู้ฝังสมบัติจะทำพิธีให้วิญญาณผู้ดูแลเฝ้าไว้ คนในท้องถิ่นเรียกผู้เฝ้านี้ว่าปู่โสมเฝ้าทรัพย์',
+ belief:'เล่ากันว่าผู้ที่มาขุดสมบัติโดยไม่ขออนุญาตมักถูกผู้เฝ้าขัดขวาง',
+ guard:'ไม่ขุดค้นโบราณสถานหรือที่ฝังสมบัติโดยพลการ และเคารพกฎหมายโบราณสถาน',refs:[]},
+{n:'18',id:'nangram',name:'ผีนางรำ',en:'Phi Nang Ram',kind:'ผีนักแสดง · ผีโรงละคร',where:'เล่าตามโรงละครและศาลาเก่า',region:'ทั่วไทย',fear:4,spirit:'#8fa8ff',
+ tag:'นางรำที่ยังรำต่อบนเวทีเก่าหลังเที่ยงคืน',
+ human:'นางรำไทยในชุดเต็มยศ สวมชฎาทอง ชุดปักสีเขียวทอง สวมเล็บทอง ยืนในท่ารำสง่างามบนเวที',
+ ghost:'ผิวซีดเทา ตาโบ๋ ผมยาวสยายจากชฎา ชุดซีดขาด นิ้วยาวแหลม ยังคงท่ารำเดิมแต่บิดเบี้ยว ลอยเหนือเวทีเก่าที่ม่านขาดวิ่น',
+ origin:'เป็นเรื่องเล่าตามโรงละครหรือศาลาเก่า ว่านักแสดงที่จากไปยังกลับมารำเมื่อไม่มีผู้ชม',
+ belief:'เล่ากันว่ามีผู้ได้ยินเสียงดนตรีปี่พาทย์และเห็นเงารำยามดึกในสถานที่ร้าง',
+ guard:'ครูบาอาจารย์นาฏศิลป์มักไหว้ครูก่อนการแสดงและเก็บเครื่องแต่งกายด้วยความเคารพ',refs:[]},
+{n:'19',id:'mayanang',name:'แม่ย่านาง',en:'Mae Ya Nang',kind:'วิญญาณผู้พิทักษ์ · ประจำเรือ',where:'ชาวประมงภาคใต้และชายฝั่ง',region:'ภาคใต้',fear:1,spirit:'#7ad6ff',
+ tag:'ผีผู้พิทักษ์หัวเรือ ที่ชาวประมงไหว้ก่อนออกทะเล',
+ human:'หญิงสูงวัยผู้สง่างาม ผมสีเทาเกล้ามวย นุ่งสไบและผ้าซิ่น ยิ้มอ่อนโยนอยู่บนสะพานท่าเรือ',
+ ghost:'ร่างโปร่งแสงเรืองแสงอยู่ที่หัวเรือหางยาว มีผ้าแพรสามสีและพวงมาลัยดอกมะลิพันรอบ มองคลื่นลมด้วยแววตาปกป้อง',
+ origin:'เชื่อกันว่าแม่ย่านางเป็นวิญญาณผู้หญิงที่สถิตอยู่กับเรือ คุ้มครองชาวเรือให้ปลอดภัย',
+ belief:'ชาวประมงผูกผ้าสามสีและพวงมาลัยไว้ที่หัวเรือ และไหว้ก่อนออกเรือเพื่อขอความปลอดภัย',
+ guard:'ไหว้ขอพรก่อนออกเรือ และเคารพสถานที่ประจำเรือ',refs:[]}
+];
+const BY=Object.fromEntries(G.map(g=>[g.id,g]));
+const ROWS=[
+ {t:'ผีไทยทั้งหมด',s:`${G.length} ตัว ตัวที่มีวิดีโออยู่ก่อน`,ids:G.slice().sort((a,b)=>(b.video?1:0)-(a.video?1:0)||a.n.localeCompare(b.n)).map(g=>g.id)},
+ {t:'ผีสาว ตำนานรักและความแค้น',ids:['maenak','takhian','tani','langkluang','nangram','mayanang']},
+ {t:'ออกหากินยามค่ำคืน',ids:['krasue','krahang','pop','phong','huakhat','kongkoi']},
+ {t:'ไสยศาสตร์และสัตว์ศักดิ์สิทธิ์',ids:['khwaithanu','saming','mabong','kuman','pusom']},
+ {t:'ผีในประเพณีและความเชื่อ',ids:['takhon','pret','mayanang','kuman']},
+ {t:'ระดับหลอนสูงสุด',s:'เรียงตามระดับความหลอน',ids:G.slice().sort((a,b)=>b.fear-a.fear||a.n.localeCompare(b.n)).slice(0,8).map(g=>g.id)}
+];
+const HERO=['krasue','maenak'];
+
+/* ---------------- helpers ---------------- */
+const $=(s,r=document)=>r.querySelector(s);
+const ICON={
+ play:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.2-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg>',
+ info:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>',
+ pause:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4.5" width="4.2" height="15" rx="1"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1"/></svg>',
+ miniPlay:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.2-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg>',
+ vol:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+ mute:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9.5 5 5M21 9.5l-5 5"/></svg>',
+ x:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+ heart:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.7 4.5c2 0 3.7 1.1 5.3 3 1.600-1.900 3.300-3 5.300-3 3.700 0 5.800 3.700 4.300 7.200C19.500 16.400 12 21 12 21Z"/></svg>',
+ plus:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+ check:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg>',
+ chev:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>',
+ sun:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.500M12 19.500V22M2 12h2.500M19.500 12H22M4.900 4.900l1.800 1.800M17.300 17.300l1.800 1.800M4.900 19.100l1.800-1.800M17.300 6.700l1.800-1.800"/></svg>',
+ moon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.500 14.500A8.500 8.500 0 1 1 9.500 3.500a7 7 0 0 0 11 11Z"/></svg>',
+ swap:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>'
+};
+let LIST=[];try{LIST=JSON.parse(localStorage.getItem('ghostlist')||'[]')}catch(e){}
+const saveList=()=>{try{localStorage.setItem('ghostlist',JSON.stringify(LIST))}catch(e){}};
+const inList=id=>LIST.includes(id);
+const fearHtml=g=>`<span class="fear">ระดับหลอน <i>${[1,2,3,4,5].map(i=>`<b class="${i<=g.fear?'on':''}"></b>`).join('')}</i></span>`;
+const short=g=>g.kind.split(' · ')[0];
+
+function cardHtml(g,i=0){
+  return `<button class="card" data-id="${g.id}" style="--sp:${g.spirit};--i:${i}" aria-label="${g.name} ดูรายละเอียด">
+    <img class="h" src="img/${g.n}_h.jpg" alt="" loading="lazy" decoding="async">
+    <img class="g" src="img/${g.n}_g.jpg" alt="" loading="lazy" decoding="async">
+    ${g.video?'<video muted loop playsinline preload="none" tabindex="-1"></video>':''}
+    ${g.video?`<span class="vb">${ICON.play.replace('width="22" height="22"','')}วิดีโอ</span>`:''}
+    <span class="heart ${inList(g.id)?'on':''}" data-heart="${g.id}">${ICON.heart}</span>
+    <span class="cap"><b>${g.name}</b><span>${short(g)}</span></span>
+  </button>`;
+}
+function rowHtml(r){
+  const items=r.ids.map(id=>BY[id]).filter(Boolean);
+  if(!items.length)return'';
+  return `<section class="row"><div class="gut inner"><h2>${r.t}${r.s?`<span>${r.s}</span>`:''}</h2></div>
+    <div class="rail"><button class="arr l" aria-label="เลื่อนซ้าย" disabled>${ICON.chev.replace('<path','<path transform="translate(24 0) scale(-1 1)"')}</button>
+    <div class="track">${items.map((g,i)=>cardHtml(g,i)).join('')}</div>
+    <button class="arr r" aria-label="เลื่อนขวา">${ICON.chev}</button></div></section>`;
+}
+
+/* ---------------- views ---------------- */
+const MENU=[['home','หน้าแรก'],['all','ผีทั้งหมด'],['video','มีวิดีโอ'],['list','รายการของฉัน']];
+let view='home',region='ทั้งหมด',query='',heroIdx=0,heroMuted=true;
+const app=$('#app');
+
+function renderMenu(){
+  $('#menu').innerHTML=MENU.map(([k,t])=>`<button data-v="${k}" ${view===k&&!query?'aria-current="true"':''}>${t}${k==='list'&&LIST.length?` (${LIST.length})`:''}</button>`).join('');
+}
+function heroHtml(){
+  const g=BY[HERO[heroIdx]];
+  return `<section class="hero" style="--spirit:${g.spirit}" aria-label="เรื่องเด่น">
+        <div class="inner gut">
+      <div class="hero-copy">
+        <div class="eyebrow">เรื่องเด่น · ผีไทย</div>
+        <h1><small>${g.en}</small>${g.name}</h1>
+        <div class="meta"><span class="chip">${g.region}</span><span>${g.kind}</span>${fearHtml(g)}</div>
+        <p class="tag">${g.tag}</p>
+        <div class="btns"><button class="btn play" data-open="${g.id}" data-play="1">${ICON.play}เล่นวิดีโอ</button><button class="btn info" data-open="${g.id}">${ICON.info}ข้อมูลเพิ่มเติม</button></div>
+      </div>
+      <div class="hero-media"><div class="fan l"><img src="img/${g.n}_h.jpg" alt=""><span>คน</span></div><div class="fan r"><img src="img/${g.n}_g.jpg" alt=""><span>ผี</span></div><div class="frame">
+        <img class="poster" src="vid/${g.video}.jpg" alt="${g.name}">
+        <video id="heroVid" src="vid/${g.video}.mp4" poster="vid/${g.video}.jpg" ${heroMuted?'muted':''} loop playsinline autoplay preload="auto"></video>
+        ${g.id==='krasue'?`<button class="snd" id="snd" aria-label="${heroMuted?'เปิดเสียง':'ปิดเสียง'}">${heroMuted?ICON.mute:ICON.vol}</button>`:''}
+      </div></div>
+    </div>
+    <div class="dots"><div class="inner gut" role="tablist" aria-label="เลือกเรื่องเด่น">${HERO.map((id,i)=>`<button role="tab" data-hero="${i}" aria-label="${BY[id].name}" ${i===heroIdx?'aria-current="true"':''}></button>`).join('')}</div></div>
+  </section>`;
+}
+function footerHtml(){return `<footer class="gut"><div class="inner"><b>พิพิธภัณฑ์ผีไทย</b><p>รวบรวมผีไทยจากเรื่องเล่าและความเชื่อพื้นบ้าน เรื่องเล่ามีหลายสำนวนตามท้องถิ่น เนื้อหานี้สรุปจากสำนวนที่แพร่หลาย ภาพและวิดีโอสร้างด้วย AI เพื่อประกอบเรื่องเล่า ไม่ใช่ข้อเท็จจริง</p></div></footer>`}
+
+function gridPage(title,sub,items,withRegion){
+  return `<div class="page gut"><div class="inner"><h1>${title}</h1><p class="sub">${sub}</p>
+   ${withRegion?`<div class="chips" role="group" aria-label="กรองตามภาค">${['ทั้งหมด',...REGIONS].map(r=>`<button data-region="${r}" aria-pressed="${region===r}">${r}</button>`).join('')}</div>`:''}
+   ${items.length?`<div class="grid">${items.map((g,i)=>cardHtml(g,i)).join('')}</div>`:`<div class="empty">ไม่พบผีที่ตรงกับเงื่อนไข</div>`}
+  </div></div>${footerHtml()}`;
+}
+function render(){
+  renderMenu();
+  stopHeroObs();
+  if(query){const q=query.toLowerCase();const items=G.filter(g=>(g.name+g.en+g.kind+g.where+g.region).toLowerCase().includes(q));
+    app.innerHTML=gridPage(`ผลการค้นหา "${query}"`,`พบ ${items.length} ตัว`,items,false);}
+  else if(view==='home'){
+    app.innerHTML=heroHtml()+`<main>${ROWS.map(rowHtml).join('')}</main>`+footerHtml();
+    setupHero();setupRails();
+  }
+  else if(view==='all'){const items=G.filter(g=>region==='ทั้งหมด'||g.region===region);
+    app.innerHTML=gridPage('ผีทั้งหมด',`ผีไทย ${G.length} ตัว กรองตามภาคที่เล่าต่อกันมา`,items,true);}
+  else if(view==='video'){const items=G.filter(g=>g.video);
+    app.innerHTML=gridPage('ผีที่มีวิดีโอแล้ว',`${items.length} ตัวที่ทำวิดีโอเสร็จ ตัวอื่นกำลังทยอยทำ ดูภาพคนและผีเทียบกันได้ในหน้ารายละเอียด`,items,false);}
+  else if(view==='list'){const items=LIST.map(id=>BY[id]).filter(Boolean);
+    app.innerHTML=gridPage('รายการของฉัน','ผีที่คุณกดเก็บไว้ จำไว้ในเบราว์เซอร์นี้',items,false);
+    if(!items.length)$('.empty').textContent='ยังไม่มีผีในรายการ กดไอคอนหัวใจที่การ์ดเพื่อเก็บไว้';}
+  window.scrollTo({top:0,behavior:'instant'});
+  onScroll();
+}
+
+/* hero */
+let heroObs=null;
+function stopHeroObs(){if(heroObs){heroObs.disconnect();heroObs=null}}
+function setupHero(){
+  const v=$('#heroVid');if(!v)return;
+  v.muted=heroMuted;
+  const poster=$('.hero-media .poster');
+  v.addEventListener('playing',()=>poster&&poster.classList.add('hide'),{once:true});
+  const p=v.play();if(p&&p.catch)p.catch(()=>{});
+  heroObs=new IntersectionObserver(es=>{es.forEach(e=>{if(!document.getElementById('heroVid'))return;if(e.isIntersecting&&$('#modal').hidden)v.play().catch(()=>{});else v.pause()})},{threshold:.15});
+  heroObs.observe($('.hero'));
+}
+function setupRails(){
+  document.querySelectorAll('.rail').forEach(r=>{
+    const t=$('.track',r),l=$('.arr.l',r),rr=$('.arr.r',r);
+    const upd=()=>{l.disabled=t.scrollLeft<8;rr.disabled=t.scrollLeft+t.clientWidth>=t.scrollWidth-8};
+    t.addEventListener('scroll',upd,{passive:true});upd();setTimeout(upd,400);
+    l.onclick=()=>t.scrollBy({left:-t.clientWidth*.85,behavior:'smooth'});
+    rr.onclick=()=>t.scrollBy({left:t.clientWidth*.85,behavior:'smooth'});
+  });
+}
+
+/* card hover preview (desktop) */
+let pvT=null;
+document.addEventListener('mouseover',e=>{
+  const c=e.target.closest&&e.target.closest('.card');if(!c||!matchMedia('(hover:hover)').matches||c.closest('.mini'))return;
+  const g=BY[c.dataset.id];if(!g||!g.video)return;
+  clearTimeout(pvT);
+  pvT=setTimeout(()=>{const v=$('video',c);if(!v)return;if(!v.src)v.src='vid/'+g.video+'.mp4';v.currentTime=0;v.play().then(()=>c.classList.add('pv')).catch(()=>{})},350);
+});
+document.addEventListener('mouseout',e=>{
+  const c=e.target.closest&&e.target.closest('.card');if(!c||(e.relatedTarget&&c.contains(e.relatedTarget)))return;
+  clearTimeout(pvT);const v=$('video',c);if(v){v.pause();c.classList.remove('pv')}
+});
+
+/* ---------------- detail sheet ---------------- */
+let cur=null,sheetView='cmp',sweepRaf=0,lastFocus=null;
+function sheetHtml(g){
+  const rel=(ROWS.find(r=>r.ids.includes(g.id)&&r.t!=='ผีไทยทั้งหมด'&&r.t!=='ระดับหลอนสูงสุด')||ROWS[2]).ids.filter(i=>i!==g.id).slice(0,6).map(i=>BY[i]);
+  return `<div class="sheet" style="--sp:${g.spirit}" id="sheetBox">
+    <button class="sheet-x" id="sheetX" aria-label="ปิด">${ICON.x}</button>
+    <div class="sheet-in">
+      <div class="mcol"><div class="stick">
+        <div class="mstage" id="mstage"></div>
+        <div class="seg" role="group" aria-label="มุมมอง">
+          ${g.video?`<button data-sv="vid" aria-pressed="false">${ICON.miniPlay}วิดีโอ</button>`:''}
+          <button data-sv="cmp" aria-pressed="false">${ICON.swap}คน ⇄ ผี</button>
+        </div>
+      </div></div>
+      <div class="icol">
+        <div><div class="en">${g.en}</div><h2 id="sheetTitle">${g.name}</h2></div>
+        <div class="meta"><span class="chip">${g.region}</span><span>${g.kind}</span>${fearHtml(g)}</div>
+        <p class="lede">${g.tag}</p>
+        <div class="btns" style="margin:0"><button class="btn play" id="listBtn" style="font-size:15px;padding:8px 18px"></button></div>
+        <div class="two">
+          <div class="mood"><h3>${ICON.sun}ตอนกลางวัน</h3>${g.human}</div>
+          <div class="mood night"><h3>${ICON.moon}ตอนกลางคืน</h3>${g.ghost}</div>
+        </div>
+        <div class="facts">
+          <div><h3>ที่มา</h3><p>${g.origin}</p></div>
+          <div><h3>ความเชื่อ</h3><p>${g.belief}</p></div>
+          <div><h3>วิธีรับมือ</h3><p>${g.guard}</p></div>
+          <div><h3>พื้นที่ที่เล่าต่อกัน</h3><p>${g.where}</p></div>
+        </div>
+        ${g.refs.length?`<div class="refs">แหล่งอ้างอิง ${g.refs.map(r=>`<a href="${r[1]}" target="_blank" rel="noopener">${r[0]}</a>`).join('')}</div>`:''}
+        <div class="more"><h3>ผีที่คุณอาจชอบ</h3><div class="mini">${rel.map((r,i)=>cardHtml(r,i)).join('')}</div></div>
+      </div>
+    </div></div>`;
+}
+function setListBtn(){const b=$('#listBtn');if(!b||!cur)return;b.innerHTML=inList(cur.id)?`${ICON.check}อยู่ในรายการของฉัน`:`${ICON.plus}เพิ่มในรายการของฉัน`}
+function openSheet(id,autoplay){
+  const g=BY[id];if(!g)return;cur=g;lastFocus=document.activeElement;
+  const m=$('#modal');m.innerHTML=sheetHtml(g);m.hidden=false;m.scrollTop=0;document.body.style.overflow='hidden';
+  const hv=$('#heroVid');if(hv)hv.pause();
+  setListBtn();
+  setSheetView(g.video?'vid':'cmp',autoplay);
+  try{history.replaceState(null,'','#'+g.n)}catch(e){}
+  $('#sheetX').focus({preventScroll:true});
+}
+function closeSheet(){
+  cancelAnimationFrame(sweepRaf);
+  const m=$('#modal');if(m.hidden)return;
+  const v=$('#mstage video');if(v)v.pause();
+  m.hidden=true;m.innerHTML='';document.body.style.overflow='';cur=null;
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+  const hv=$('#heroVid');if(hv)hv.play().catch(()=>{});
+  if(lastFocus&&lastFocus.focus)try{lastFocus.focus({preventScroll:true})}catch(e){}
+}
+function setSheetView(v,autoplay){
+  cancelAnimationFrame(sweepRaf);
+  sheetView=v;const g=cur;const st=$('#mstage');
+  document.querySelectorAll('[data-sv]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sv===v)));
+  if(v==='vid'){
+    st.innerHTML=`<video id="mv" src="vid/${g.video}.mp4" poster="vid/${g.video}.jpg" loop playsinline preload="auto" ${autoplay?'':'muted'}></video>
+      <div class="vtap" id="vtap"></div>
+      <div class="vbar"><button id="vpp" aria-label="เล่นหรือหยุด">${ICON.pause}</button><input id="vseek" type="range" min="0" max="1000" value="0" aria-label="เลื่อนวิดีโอ"><button id="vmute" aria-label="เปิดหรือปิดเสียง">${ICON.vol}</button></div>`;
+    const vid=$('#mv'),pp=$('#vpp'),seek=$('#vseek'),mu=$('#vmute');
+    const hasAudio=g.id==='krasue';
+    vid.muted=!autoplay&&hasAudio?true:(!hasAudio);
+    if(!hasAudio){mu.style.visibility='hidden'}
+    const sync=()=>{pp.innerHTML=vid.paused?ICON.miniPlay:ICON.pause;mu.innerHTML=vid.muted?ICON.mute:ICON.vol};
+    vid.addEventListener('play',sync);vid.addEventListener('pause',sync);
+    vid.addEventListener('timeupdate',()=>{if(vid.duration&&!seek.dataset.drag)seek.value=Math.round(vid.currentTime/vid.duration*1000)});
+    seek.addEventListener('input',()=>{seek.dataset.drag='1';if(vid.duration)vid.currentTime=seek.value/1000*vid.duration});
+    seek.addEventListener('change',()=>{delete seek.dataset.drag});
+    const tog=()=>{vid.paused?vid.play().catch(()=>{}):vid.pause()};
+    pp.onclick=tog;$('#vtap').onclick=tog;
+    mu.onclick=()=>{vid.muted=!vid.muted;sync()};
+    vid.play().catch(()=>{vid.muted=true;vid.play().catch(()=>{});sync()});sync();
+  }else{
+    st.innerHTML=`<div class="cmp" id="cmp" style="--p:0%">
+      <img src="img/${g.n}_h.jpg" alt="ภาพ${g.name} ตอนเป็นคน">
+      <img class="gst" src="img/${g.n}_g.jpg" alt="ภาพ${g.name} ตอนเป็นผี">
+      <span class="lbl a">ผี</span><span class="lbl b">คน</span>
+      <div class="line"></div><div class="knob">${ICON.swap}</div>
+      <input type="range" min="0" max="100" value="0" id="cmpR" aria-label="เลื่อนเพื่อเปลี่ยนจากคนเป็นผี">
+    </div>${g.video?'':'<div class="soon">วิดีโอของตัวนี้กำลังทำ ระหว่างนี้ลากดูภาพตอนเป็นคนและตอนเป็นผีได้</div>'}`;
+    const c=$('#cmp'),r=$('#cmpR');let user=false;
+    const set=p=>c.style.setProperty('--p',p+'%');
+    r.addEventListener('input',()=>{user=true;cancelAnimationFrame(sweepRaf);set(r.value)});
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches){set(50);r.value=50;return}
+    const t0=performance.now();
+    const step=t=>{if(user)return;const k=Math.min(1,(t-t0-500)/3200);if(k>=0){const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;set((e*100).toFixed(1));r.value=e*100}if(k<1)sweepRaf=requestAnimationFrame(step)};
+    sweepRaf=requestAnimationFrame(step);
+  }
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener('click',e=>{
+  const t=e.target;
+  const heart=t.closest('[data-heart]');
+  if(heart){e.stopPropagation();e.preventDefault();const id=heart.dataset.heart;LIST=inList(id)?LIST.filter(x=>x!==id):[...LIST,id];saveList();document.querySelectorAll(`[data-heart="${id}"]`).forEach(h=>h.classList.toggle('on',inList(id)));renderMenu();setListBtn();if(view==='list'&&!query&&$('#modal').hidden)render();return}
+  const op=t.closest('[data-open]');if(op){openSheet(op.dataset.open,!!op.dataset.play);return}
+  const cd=t.closest('.card');if(cd){openSheet(cd.dataset.id,false);return}
+  if(t.closest('#sheetX')||t===$('#modal')){closeSheet();return}
+  if(t.closest('#listBtn')){const id=cur.id;LIST=inList(id)?LIST.filter(x=>x!==id):[...LIST,id];saveList();setListBtn();renderMenu();document.querySelectorAll(`[data-heart="${id}"]`).forEach(h=>h.classList.toggle('on',inList(id)));return}
+  const sv=t.closest('[data-sv]');if(sv){setSheetView(sv.dataset.sv,true);return}
+  const mv=t.closest('[data-v]');if(mv){query='';$('#q').value='';$('#search').classList.remove('open');view=mv.dataset.v;render();return}
+  const rg=t.closest('[data-region]');if(rg){region=rg.dataset.region;render();return}
+  const hr=t.closest('[data-hero]');if(hr){heroIdx=+hr.dataset.hero;render();return}
+  if(t.closest('#snd')){const v=$('#heroVid');heroMuted=!heroMuted;v.muted=heroMuted;if(!heroMuted)v.play().catch(()=>{});$('#snd').innerHTML=heroMuted?ICON.mute:ICON.vol;$('#snd').setAttribute('aria-label',heroMuted?'เปิดเสียง':'ปิดเสียง');return}
+  if(t.closest('#logo')){query='';$('#q').value='';view='home';render();return}
+  if(t.closest('#sBtn')){const s=$('#search');s.classList.toggle('open');if(s.classList.contains('open'))$('#q').focus();else if(query){query='';$('#q').value='';render()}return}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&!$('#modal').hidden){closeSheet();return}
+  if(e.key==='Tab'&&!$('#modal').hidden){
+    const f=[...$('#modal').querySelectorAll('button,input,a[href]')].filter(x=>x.offsetParent&&!x.disabled&&x.tabIndex>=0);
+    if(!f.length)return;const a=f[0],b=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===a){e.preventDefault();b.focus()}else if(!e.shiftKey&&document.activeElement===b){e.preventDefault();a.focus()}
+  }
+});
+let qT=null;
+$('#q').addEventListener('input',e=>{clearTimeout(qT);qT=setTimeout(()=>{query=e.target.value.trim();render()},180)});
+function onScroll(){$('#nav').classList.toggle('solid',window.scrollY>40||view!=='home'||!!query)}
+window.addEventListener('scroll',onScroll,{passive:true});
+function fromHash(){const h=(location.hash||'').replace('#','');const g=G.find(x=>x.n===h);if(g&&(!cur||cur.id!==g.id))openSheet(g.id,false)}
+render();fromHash();
+</script>
+
+</body></html>
