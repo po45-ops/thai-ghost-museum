@@ -623,7 +623,7 @@ document.addEventListener('click',e=>{
   const heart=t.closest('[data-heart]');
   if(heart){e.stopPropagation();e.preventDefault();const id=heart.dataset.heart;LIST=inList(id)?LIST.filter(x=>x!==id):[...LIST,id];saveList();document.querySelectorAll(`[data-heart="${id}"]`).forEach(h=>h.classList.toggle('on',inList(id)));renderMenu();setListBtn();if(view==='list'&&!query&&$('#modal').hidden)render();return}
   const op=t.closest('[data-open]');if(op){openSheet(op.dataset.open,!!op.dataset.play);return}
-  const cd=t.closest('.card');if(cd){openSheet(cd.dataset.id,false);return}
+  const cd=t.closest('.card');if(cd){openSheet(cd.dataset.id,true);return}
   if(t.closest('#sheetX')||t===$('#modal')){closeSheet();return}
   if(t.closest('#listBtn')){const id=cur.id;LIST=inList(id)?LIST.filter(x=>x!==id):[...LIST,id];saveList();setListBtn();renderMenu();document.querySelectorAll(`[data-heart="${id}"]`).forEach(h=>h.classList.toggle('on',inList(id)));return}
   const sv=t.closest('[data-sv]');if(sv){setSheetView(sv.dataset.sv,true);return}
