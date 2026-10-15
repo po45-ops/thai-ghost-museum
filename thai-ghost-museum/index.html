@@ -51,9 +51,9 @@ img{display:block}
 .search input::placeholder{color:var(--muted)}
 
 /* ---------- hero ---------- */
-.hero{position:relative;min-height:560px;height:min(86vh,800px);overflow:hidden;isolation:isolate;background:var(--bg)}
+.hero{position:relative;min-height:560px;height:min(86vh,800px);overflow:hidden;isolation:isolate;background:var(--bg)}.hero .scene{position:absolute;inset:0;z-index:-3;background:url(img/hero-bg.jpg) 100% 30%/max(125%,178vh) auto no-repeat;filter:brightness(1.15) saturate(1.1);animation:sceneDrift 40s ease-in-out infinite alternate}@keyframes sceneDrift{from{transform:scale(1.04) translateX(0)}to{transform:scale(1.1) translateX(-1.5%)}}.hero .shade{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(5,7,12,.7) 0,rgba(5,7,12,.38) 30%,rgba(5,7,12,.06) 55%,rgba(5,7,12,.2) 100%)}.hero .ff{position:absolute;inset:0;z-index:-1;pointer-events:none}.hero .ff i{position:absolute;width:5px;height:5px;border-radius:50%;background:#e9ff8a;box-shadow:0 0 8px 3px rgba(214,255,90,.75),0 0 22px 6px rgba(180,255,60,.35);opacity:0;animation:ffFloat var(--d,9s) ease-in-out var(--dl,0s) infinite}@keyframes ffFloat{0%{opacity:0;transform:translate(0,0)}15%{opacity:.95}50%{opacity:.35;transform:translate(var(--x,20px),var(--y,-30px))}70%{opacity:.9}100%{opacity:0;transform:translate(calc(var(--x,20px)*1.6),calc(var(--y,-30px)*1.8))}}@media (prefers-reduced-motion:reduce){.hero .scene,.hero .ff i{animation:none}.hero .ff i{opacity:.7}}@media (max-width:900px){.hero .scene{background-size:cover;background-position:48% 20%}.hero .shade{background:linear-gradient(180deg,rgba(5,7,12,.15) 0,rgba(5,7,12,.35) 55%,rgba(5,7,12,.7) 100%)}}
 .hero-bg{position:absolute;inset:-6%;z-index:-3;width:112%;height:112%;object-fit:cover;filter:blur(16px) brightness(.62) saturate(1.25);transition:opacity .6s}
-.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(46% 72% at 75% 50%,color-mix(in srgb,var(--spirit) 20%,transparent),transparent 72%),linear-gradient(180deg,rgba(0,0,0,.45) 0,transparent 24%,transparent 72%,var(--bg) 100%);transition:background .6s}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(40% 65% at 75% 50%,color-mix(in srgb,var(--spirit) 16%,transparent),transparent 72%),linear-gradient(180deg,rgba(0,0,0,.5) 0,transparent 16%,transparent 74%,var(--bg) 100%);transition:background .6s}
 .hero .inner{height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end;gap:24px;padding-top:76px;padding-bottom:clamp(36px,7vh,72px)}
 .hero-copy{min-width:0;max-width:600px;display:flex;flex-direction:column;gap:14px;align-self:center}
 .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.16em;color:var(--spirit);text-transform:uppercase}
@@ -444,7 +444,7 @@ function renderMenu(){
 }
 function heroHtml(){
   const g=BY[HERO[heroIdx]];
-  return `<section class="hero" style="--spirit:${g.spirit}" aria-label="เรื่องเด่น">
+  return `<section class="hero" style="--spirit:${g.spirit}" aria-label="เรื่องเด่น"><div class="scene" aria-hidden="true"></div><div class="shade" aria-hidden="true"></div><div class="ff" aria-hidden="true">${Array.from({length:22},(_,i)=>{const r=k=>((Math.sin(i*12.9898+k*78.233)*43758.5453)%1+1)%1;return `<i style="left:${(r(1)*100).toFixed(1)}%;top:${(25+r(2)*70).toFixed(1)}%;--d:${(7+r(3)*8).toFixed(1)}s;--dl:${(-r(4)*12).toFixed(1)}s;--x:${(r(5)*80-40).toFixed(0)}px;--y:${(-20-r(6)*60).toFixed(0)}px"></i>`}).join('')}</div>
         <div class="inner gut">
       <div class="hero-copy">
         <div class="eyebrow">เรื่องเด่น · ผีไทย</div>
