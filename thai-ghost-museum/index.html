@@ -456,7 +456,7 @@ function heroHtml(){
       <div class="hero-media"><div class="fan l"><img src="img/${g.n}_h.jpg" alt=""><span>คน</span></div><div class="fan r"><img src="img/${g.n}_g.jpg" alt=""><span>ผี</span></div><div class="frame">
         <img class="poster" src="vid/${g.video}.jpg" alt="${g.name}">
         <video id="heroVid" src="vid/${g.video}.mp4" poster="vid/${g.video}.jpg" ${heroMuted?'muted':''} loop playsinline autoplay preload="auto"></video>
-        ${g.id==='krasue'?`<button class="snd" id="snd" aria-label="${heroMuted?'เปิดเสียง':'ปิดเสียง'}">${heroMuted?ICON.mute:ICON.vol}</button>`:''}
+        ${g.audio!==false?`<button class="snd" id="snd" aria-label="${heroMuted?'เปิดเสียง':'ปิดเสียง'}">${heroMuted?ICON.mute:ICON.vol}</button>`:''}
       </div></div>
     </div>
     <div class="dots"><div class="inner gut" role="tablist" aria-label="เลือกเรื่องเด่น">${HERO.map((id,i)=>`<button role="tab" data-hero="${i}" aria-label="${BY[id].name}" ${i===heroIdx?'aria-current="true"':''}></button>`).join('')}</div></div>
@@ -587,7 +587,7 @@ function setSheetView(v,autoplay){
       <div class="vtap" id="vtap"></div>
       <div class="vbar"><button id="vpp" aria-label="เล่นหรือหยุด">${ICON.pause}</button><input id="vseek" type="range" min="0" max="1000" value="0" aria-label="เลื่อนวิดีโอ"><button id="vmute" aria-label="เปิดหรือปิดเสียง">${ICON.vol}</button></div>`;
     const vid=$('#mv'),pp=$('#vpp'),seek=$('#vseek'),mu=$('#vmute');
-    const hasAudio=g.id==='krasue';
+    const hasAudio=g.audio!==false;
     vid.muted=!autoplay&&hasAudio?true:(!hasAudio);
     if(!hasAudio){mu.style.visibility='hidden'}
     const sync=()=>{pp.innerHTML=vid.paused?ICON.miniPlay:ICON.pause;mu.innerHTML=vid.muted?ICON.mute:ICON.vol};
