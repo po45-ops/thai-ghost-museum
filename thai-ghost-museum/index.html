@@ -86,6 +86,11 @@ img{display:block}
 .fan.r{left:50%;transform:rotate(5deg);transform-origin:50% 100%}.fan.r span{right:12px;color:var(--spirit)}
 .snd{position:absolute;right:12px;bottom:12px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.5);display:grid;place-items:center;backdrop-filter:blur(4px);transition:background .2s}
 .snd:hover{background:rgba(0,0,0,.8)}
+.snd span{display:none}
+.snd.off{width:auto;padding:0 14px 0 10px;border-radius:999px;display:flex;gap:6px;align-items:center;font-size:13.5px;font-weight:600;color:#fff;border-color:var(--spirit);box-shadow:0 0 0 0 color-mix(in srgb,var(--spirit) 60%,transparent);animation:sndPulse 2s ease-out infinite}
+.snd.off span{display:inline}
+@keyframes sndPulse{to{box-shadow:0 0 0 12px transparent}}
+@media (prefers-reduced-motion:reduce){.snd.off{animation:none}}
 .dots{position:absolute;left:0;right:0;bottom:12px;z-index:2}
 .dots .inner{display:flex;gap:8px}
 .dots button{width:26px;height:4px;border-radius:2px;background:rgba(255,255,255,.28);transition:background .2s,width .2s}
@@ -446,7 +451,7 @@ function rowHtml(r){
 
 /* ---------------- views ---------------- */
 const MENU=[['home','หน้าแรก'],['all','ผีทั้งหมด'],['video','มีวิดีโอ'],['list','รายการของฉัน']];
-let view='home',region='ทั้งหมด',query='',heroIdx=0,heroMuted=true;
+let view='home',region='ทั้งหมด',query='',heroIdx=0,heroMuted=true,heroUserSet=false;
 const app=$('#app');
 
 function renderMenu(){
@@ -466,7 +471,7 @@ function heroHtml(){
       <div class="hero-media"><div class="fan l"><img src="img/${g.n}_h.jpg" alt=""><span>คน</span></div><div class="fan r"><img src="img/${g.n}_g.jpg" alt=""><span>ผี</span></div><div class="frame">
         <img class="poster" src="vid/${g.video}.jpg" alt="${g.name}">
         <video id="heroVid" src="vid/${g.video}.mp4" poster="vid/${g.video}.jpg" ${heroMuted?'muted':''} loop playsinline autoplay preload="auto"></video>
-        ${g.audio!==false?`<button class="snd" id="snd" aria-label="${heroMuted?'เปิดเสียง':'ปิดเสียง'}">${heroMuted?ICON.mute:ICON.vol}</button>`:''}
+        ${g.audio!==false?`<button class="snd${heroMuted?' off':''}" id="snd" aria-label="${heroMuted?'เปิดเสียง':'ปิดเสียง'}">${heroMuted?ICON.mute:ICON.vol}<span>แตะเพื่อเปิดเสียง</span></button>`:''}
       </div></div>
     </div>
     <div class="dots"><div class="inner gut" role="tablist" aria-label="เลือกเรื่องเด่น">${HERO.map((id,i)=>`<button role="tab" data-hero="${i}" aria-label="${BY[id].name}" ${i===heroIdx?'aria-current="true"':''}></button>`).join('')}</div></div>
@@ -502,13 +507,18 @@ function render(){
 
 /* hero */
 let heroObs=null;
+function setSnd(){const b=$('#snd');if(!b)return;b.classList.toggle('off',heroMuted);b.innerHTML=(heroMuted?ICON.mute:ICON.vol)+'<span>แตะเพื่อเปิดเสียง</span>';b.setAttribute('aria-label',heroMuted?'เปิดเสียง':'ปิดเสียง')}
+function heroUnmute(){const v=$('#heroVid');if(!v||!$('#snd')||!$('#modal').hidden)return;heroMuted=false;v.muted=false;setSnd();v.play().catch(e=>{if(e&&e.name==='NotAllowedError'){heroMuted=true;v.muted=true;setSnd();v.play().catch(()=>{})}})}
+['pointerdown','keydown','touchend'].forEach(ev=>addEventListener(ev,e=>{if(heroUserSet||!heroMuted)return;if(e.target.closest&&(e.target.closest('#snd')||e.target.closest('[data-open]')||e.target.closest('.card')))return;heroUnmute()},{capture:true,passive:true}));
 function stopHeroObs(){if(heroObs){heroObs.disconnect();heroObs=null}}
 function setupHero(){
   const v=$('#heroVid');if(!v)return;
-  v.muted=heroMuted;
+  const hasSnd=!!$('#snd');
+  if(!heroUserSet&&hasSnd&&navigator.userActivation&&navigator.userActivation.hasBeenActive)heroMuted=false;
+  v.muted=heroMuted||!hasSnd;setSnd();
   const poster=$('.hero-media .poster');
   v.addEventListener('playing',()=>poster&&poster.classList.add('hide'),{once:true});
-  const p=v.play();if(p&&p.catch)p.catch(()=>{});
+  const p=v.play();if(p&&p.catch)p.catch(()=>{heroMuted=true;v.muted=true;setSnd();v.play().catch(()=>{})});
   heroObs=new IntersectionObserver(es=>{es.forEach(e=>{if(!document.getElementById('heroVid'))return;if(e.isIntersecting&&$('#modal').hidden)v.play().catch(()=>{});else v.pause()})},{threshold:.15});
   heroObs.observe($('.hero'));
 }
@@ -660,7 +670,7 @@ document.addEventListener('click',e=>{
   const mv=t.closest('[data-v]');if(mv){query='';$('#q').value='';$('#search').classList.remove('open');view=mv.dataset.v;render();return}
   const rg=t.closest('[data-region]');if(rg){region=rg.dataset.region;render();return}
   const hr=t.closest('[data-hero]');if(hr){heroIdx=+hr.dataset.hero;render();return}
-  if(t.closest('#snd')){const v=$('#heroVid');heroMuted=!heroMuted;v.muted=heroMuted;if(!heroMuted)v.play().catch(()=>{});$('#snd').innerHTML=heroMuted?ICON.mute:ICON.vol;$('#snd').setAttribute('aria-label',heroMuted?'เปิดเสียง':'ปิดเสียง');return}
+  if(t.closest('#snd')){const v=$('#heroVid');heroUserSet=true;heroMuted=!heroMuted;v.muted=heroMuted;if(!heroMuted)v.play().catch(()=>{});setSnd();return}
   if(t.closest('#logo')){query='';$('#q').value='';view='home';render();return}
   if(t.closest('#sBtn')){const s=$('#search');s.classList.toggle('open');if(s.classList.contains('open'))$('#q').focus();else if(query){query='';$('#q').value='';render()}return}
 });
