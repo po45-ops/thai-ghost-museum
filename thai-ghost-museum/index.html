@@ -184,6 +184,15 @@ footer p{margin:6px 0 0;max-width:80ch}
 .mood h3{margin:0 0 4px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:7px;color:var(--muted)}
 .mood.night{background:linear-gradient(160deg,#0f1218,var(--bg2));border-color:color-mix(in srgb,var(--sp) 35%,var(--line))}
 .mood.night h3{color:var(--sp)}
+.story{border:1px solid color-mix(in srgb,var(--sp) 30%,rgba(255,255,255,.08));border-radius:12px;padding:14px 16px;background:linear-gradient(135deg,color-mix(in srgb,var(--sp) 9%,#0b0d14),#0b0d14 70%)}
+.story h3{margin:0 0 4px;font-size:16px;display:flex;align-items:center;gap:8px}
+.story .sub{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.story audio{width:100%;height:40px;color-scheme:dark}
+.story .st-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.story .st-row button{font:inherit;font-size:13px;padding:5px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:transparent;color:inherit;cursor:pointer}
+.story .st-row button[aria-pressed="true"]{background:var(--sp);color:#000;border-color:var(--sp)}
+.story details{margin-top:10px}.story summary{cursor:pointer;font-size:14px;color:var(--sp)}
+.story .story-text{max-height:340px;overflow:auto;margin-top:8px;padding-right:6px;font-size:15px;line-height:1.85;color:#d8d8de}.story .story-text p{margin:0 0 12px}
 .facts{display:grid;gap:14px}
 .facts h3{margin:0 0 2px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .facts p{margin:0;max-width:62ch;font-size:15px}
@@ -393,6 +402,7 @@ const HERO=['krasue','maenak'];
 
 /* ---------------- helpers ---------------- */
 const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const ICON={
  play:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.2-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg>',
  info:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>',
@@ -526,6 +536,7 @@ document.addEventListener('mouseout',e=>{
 });
 
 /* ---------------- detail sheet ---------------- */
+const STORY_MIN={"01":14,"02":13,"03":13,"04":13,"05":13,"06":14,"07":13,"08":13,"09":13,"10":14,"11":15,"12":14,"13":14,"14":13,"15":13,"16":14,"17":14,"18":13,"19":13};let sleepT=0;
 let cur=null,sheetView='cmp',sweepRaf=0,lastFocus=null;
 function sheetHtml(g){
   const rel=(ROWS.find(r=>r.ids.includes(g.id)&&r.t!=='ผีไทยทั้งหมด'&&r.t!=='ระดับหลอนสูงสุด')||ROWS[2]).ids.filter(i=>i!==g.id).slice(0,6).map(i=>BY[i]);
@@ -544,6 +555,13 @@ function sheetHtml(g){
         <div class="meta"><span class="chip">${g.region}</span><span>${g.kind}</span>${fearHtml(g)}</div>
         <p class="lede">${g.tag}</p>
         <div class="btns" style="margin:0"><button class="btn play" id="listBtn" style="font-size:15px;padding:8px 18px"></button></div>
+        <div class="story" id="storyBox">
+          <h3>🌙 ฟังเรื่องเล่าก่อนนอน</h3>
+          <p class="sub">เล่าเต็มเรื่อง${STORY_MIN[g.n]?` · ประมาณ ${STORY_MIN[g.n]} นาที`:''} · เสียงผู้บรรยายภาษาไทย · มีฉากหลอน ควรฟังกับผู้ใหญ่</p>
+          <audio id="storyAudio" controls preload="none" src="audio/${g.n}.mp3"></audio>
+          <div class="st-row"><span style="font-size:13px;color:var(--muted)">ตั้งเวลาปิด:</span>${[0,10,20,30].map(m=>`<button data-sleep="${m}" aria-pressed="${m===0}">${m?m+' นาที':'ปิด'}</button>`).join('')}</div>
+          <details id="storyDet"><summary>อ่านเนื้อเรื่องทั้งหมด</summary><div class="story-text" id="storyText">กำลังโหลด…</div></details>
+        </div>
         <div class="two">
           <div class="mood"><h3>${ICON.sun}ตอนกลางวัน</h3>${g.human}</div>
           <div class="mood night"><h3>${ICON.moon}ตอนกลางคืน</h3>${g.ghost}</div>
@@ -560,12 +578,23 @@ function sheetHtml(g){
     </div></div>`;
 }
 function setListBtn(){const b=$('#listBtn');if(!b||!cur)return;b.innerHTML=inList(cur.id)?`${ICON.check}อยู่ในรายการของฉัน`:`${ICON.plus}เพิ่มในรายการของฉัน`}
+function setStory(g){
+  const a=$('#storyAudio'),d=$('#storyDet');if(!a)return;clearTimeout(sleepT);
+  a.addEventListener('play',()=>{const v=$('#mstage video');if(v)v.pause()});
+  $$('#storyBox [data-sleep]').forEach(b=>b.onclick=()=>{
+    const m=+b.dataset.sleep;clearTimeout(sleepT);$$('#storyBox [data-sleep]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    if(m)sleepT=setTimeout(()=>{let vol=a.volume;const f=setInterval(()=>{vol-=.05;if(vol<=0){clearInterval(f);a.pause();a.volume=1}else a.volume=vol},300)},m*60000);
+  });
+  d.addEventListener('toggle',()=>{if(!d.open||d.dataset.ok)return;d.dataset.ok=1;
+    fetch('stories/'+g.n+'.txt').then(r=>r.ok?r.text():Promise.reject()).then(t=>{const b=$('#storyText');b.textContent='';t.trim().split(/\n\s*\n/).forEach(x=>{const q=document.createElement('p');q.textContent=x.trim();b.appendChild(q)})}).catch(()=>{$('#storyText').textContent='โหลดเนื้อเรื่องไม่สำเร็จ'})});
+}
 function openSheet(id,autoplay){
   const g=BY[id];if(!g)return;cur=g;lastFocus=document.activeElement;
   const m=$('#modal');m.innerHTML=sheetHtml(g);m.hidden=false;m.scrollTop=0;document.body.style.overflow='hidden';
   const hv=$('#heroVid');if(hv)hv.pause();
   setListBtn();
   setSheetView(g.video?'vid':'cmp',autoplay);
+  setStory(g);
   try{history.replaceState(null,'','#'+g.n)}catch(e){}
   $('#sheetX').focus({preventScroll:true});
 }
@@ -573,6 +602,7 @@ function closeSheet(){
   cancelAnimationFrame(sweepRaf);
   const m=$('#modal');if(m.hidden)return;
   const v=$('#mstage video');if(v)v.pause();
+  const sa=$('#storyAudio');if(sa)sa.pause();clearTimeout(sleepT);
   m.hidden=true;m.innerHTML='';document.body.style.overflow='';cur=null;
   try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
   const hv=$('#heroVid');if(hv)hv.play().catch(()=>{});
