@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>พิพิธภัณฑ์ผีไทย</title>
+<title>พิพิธภัณฑ์ผีไทย x คุณธรรมจริยธรรม</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -243,6 +243,32 @@ footer p{margin:6px 0 0;max-width:80ch}
   .menu button{padding:6px 9px;font-size:14px}
   .btn{padding:9px 18px;font-size:15px}
 }
+
+/* คุณธรรม */
+.vstrip .vchips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.vchip{display:inline-flex;align-items:center;gap:6px;border:1px solid color-mix(in srgb,#6fcf8a 45%,var(--line));border-radius:999px;padding:4px 14px;font-size:14px;font-weight:500;color:#bdeccb;background:rgba(60,160,95,.10);transition:background .2s,border-color .2s}
+.vchip:hover{background:rgba(60,160,95,.24);border-color:#6fcf8a}
+.vchip i{font-style:normal;font-size:11.5px;color:#0c0a09;background:#6fcf8a;border-radius:999px;padding:0 7px;font-weight:700}
+.vchip.zero{opacity:.5;border-style:dashed}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:12px;margin:0 0 26px}
+.vcard{text-align:center;border:1px solid color-mix(in srgb,#6fcf8a 35%,var(--line));border-radius:14px;padding:14px 8px 12px;background:linear-gradient(180deg,rgba(111,207,138,.16),rgba(111,207,138,.03));display:flex;flex-direction:column;gap:2px;transition:transform .2s,border-color .2s}
+.vcard:hover{transform:translateY(-2px);border-color:#6fcf8a}
+.vcard small{font-size:10.5px;letter-spacing:.1em;color:var(--muted)}
+.vcard b{font-family:var(--display);font-size:19px;color:#bdeccb;line-height:1.3}
+.vcard span{font-size:12.5px;color:var(--muted)}
+.vcard[aria-pressed="true"]{background:#6fcf8a;border-color:#6fcf8a}
+.vcard[aria-pressed="true"] b,.vcard[aria-pressed="true"] small,.vcard[aria-pressed="true"] span{color:#0c0a09}
+.vcard.zero{opacity:.55;border-style:dashed}
+.vh{font-family:var(--display);font-size:24px;margin:8px 0 12px}
+.vh span{font-size:14px;color:var(--muted);margin-left:10px;font-family:var(--body)}
+.vwhy{margin-top:18px;display:grid;gap:6px;max-width:70ch}
+.vwhy p{margin:0;font-size:14.5px;color:var(--muted)}
+.vwhy b{color:var(--ink)}
+.vnote{color:var(--muted);font-size:14px}
+.vblock{border:1px solid color-mix(in srgb,#6fcf8a 35%,var(--line));border-radius:10px;padding:12px 15px;background:rgba(111,207,138,.06)}
+.vblock h3{margin:0 0 8px;font-size:13px;letter-spacing:.14em;color:#8fdba6}
+.vrow{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin:6px 0;font-size:14.5px}
+.vrow span{color:var(--muted);flex:1 1 220px}
 </style>
 
 </head><body>
@@ -414,6 +440,32 @@ const ROWS=[
 ];
 const HERO=['krasue','maenak'];
 
+/* ---------------- คุณธรรม 24 ประการ (การ์ดคุณธรรม กสศ.) ---------------- */
+const V=['ซื่อสัตย์','รอบคอบ','รับผิดชอบ','มีระเบียบวินัย','ประหยัด','พอเพียง','เสียสละ','จิตอาสา','ใฝ่เรียนรู้','ขยัน','เพียรพยายาม','อดทน','มีน้ำใจ','เอื้อเฟื้อ','เมตตากรุณา','กตัญญู','สามัคคี','ยุติธรรม','สะอาด','กล้าหาญ','มีสัมมาคารวะ','สุภาพ','อ่อนน้อมถ่อมตน','ให้เกียรติ'];
+/* คุณธรรมที่แทรกอยู่ในเรื่องของผีแต่ละตน พร้อมเหตุผลสั้น ๆ (ร่างแรก รอปรับตอนเกลาเรื่องเล่า) */
+const VIR={
+ krasue:[['ยุติธรรม','ไม่ตัดสินใครจากข่าวลือหรือรูปลักษณ์ภายนอก'],['เมตตากรุณา','คนที่ถูกระแวงก็ยังเป็นคน ควรได้รับความเห็นอกเห็นใจ'],['สะอาด','เก็บผ้าและดูแลบ้านเรือนให้เรียบร้อยตามคำเตือนโบราณ']],
+ krahang:[['ซื่อสัตย์','ผิดสัญญากับครูวิชา ผลที่ตามมาก็ต้องรับ'],['รับผิดชอบ','เรียนวิชาแล้วคุมไม่ได้ ผู้ร่ำเรียนต้องรับผลของมันเอง']],
+ maenak:[['ซื่อสัตย์','รักมั่นคงต่อสามีและลูกแม้จะตายไปแล้ว'],['อดทน','รอคอยคนรักอยู่ที่บ้านด้วยความหวังยาวนาน'],['เมตตากรุณา','พระท่านเมตตาปลอบใจจนนางยอมไปเกิด']],
+ takhian:[['มีสัมมาคารวะ','ขออนุญาตก่อนตัดต้นไม้ใหญ่ ไม่ลบหลู่ผู้ที่อยู่มาก่อน'],['พอเพียง','ความโลภที่อยากได้ไม้ดีมาต่อเรือ คือต้นเหตุของเรื่อง']],
+ tani:[['อ่อนน้อมถ่อมตน','บอกกล่าวและขอขมาก่อนเอาสิ่งใดไป'],['ให้เกียรติ','เคารพธรรมชาติและสิ่งที่เรามองไม่เห็น'],['รับผิดชอบ','ทำผิดแล้วต้องขอขมาและปลูกต้นใหม่ทดแทน']],
+ takhon:[['สามัคคี','ทั้งชุมชนร่วมแรงร่วมใจจัดงานบุญหลวงด้วยกัน'],['จิตอาสา','ชาวบ้านช่วยกันสืบสานประเพณีโดยไม่หวังรางวัล']],
+ kongkoi:[['กตัญญู','ทองดีเข้าป่าหาเงินเพื่อช่วยแม่ที่ป่วย'],['รอบคอบ','รู้จักระวังตัวเวลาอยู่ในที่ที่ไม่ใช่บ้านของเรา'],['มีสัมมาคารวะ','เกรงใจป่า ไม่พูดลบหลู่สิ่งที่เราไม่รู้จัก']],
+ langkluang:[['รอบคอบ','ไม่หลงเชื่อรูปลักษณ์ภายนอกที่ดูสวยงามเกินจริง'],['มีระเบียบวินัย','ไม่เดินทางลำพังในที่เปลี่ยวยามวิกาล']],
+ mabong:[['รอบคอบ','ไม่ออกไปทักทายสิ่งแปลกปลอมในหมอกหนายามค่ำ'],['มีระเบียบวินัย','อยู่ในเวลาและกติกาของบ้านเมือง']],
+ kuman:[['เมตตากรุณา','วิญญาณทุกดวงต้องการความเมตตา ทั้งคนและผี'],['รับผิดชอบ','รับมาดูแลแล้วต้องดูแลให้ดีทุกวัน ไม่ใช่แค่วันที่มันให้ประโยชน์']],
+ khwaithanu:[['พอเพียง','อย่าใช้อาคมเพราะความโลภ'],['อดทน','ข่มความแค้นไว้ เพราะของที่ปลุกด้วยความแค้นมักย้อนกลับมาหาเจ้าของ']],
+ pret:[['กตัญญู','ทำบุญกรวดน้ำอุทิศให้บรรพบุรุษผู้ล่วงลับ'],['เมตตากรุณา','พระครูเดินไปเตือนนายทรัพย์ด้วยความหวังดี'],['พอเพียง','ความโลภและตระหนี่คือเหตุที่ทำให้ไปเกิดเป็นเปรต']],
+ pop:[['ยุติธรรม','ไม่ตัดสินผู้ต้องสงสัยด้วยข่าวลือและการรุมทำร้าย'],['รอบคอบ','ใช้เหตุผลตรวจสอบก่อนเชื่อสิ่งที่ได้ยิน']],
+ phong:[['รอบคอบ','ระวังตัวและตรวจสอบก่อนเชื่อคนหรือเสียงในยามค่ำ'],['สามัคคี','ชาวบ้านช่วยกันเฝ้าระวังและดูแลกันในหมู่บ้าน']],
+ saming:[['รอบคอบ','ไม่ขานรับเสียงเรียกที่ไม่แน่ใจว่าเป็นใคร'],['กล้าหาญ','ผู้เฒ่าและชาวบ้านร่วมกันรับมือกับภัยจากป่า']],
+ huakhat:[['กล้าหาญ','วิญญาณทหารกรุงศรีอยุธยาที่ปกป้องแผ่นดิน'],['ให้เกียรติ','เคารพผู้ล่วงลับและผืนดินที่ยังมีผู้หลับอยู่'],['ขยัน','บุญมีเป็นเด็กหนุ่มขยัน แต่ต้องเรียนรู้ที่จะใจเย็นและฟังผู้ใหญ่']],
+ pusom:[['ซื่อสัตย์','ปู่โสมซื่อสัตย์ต่อหน้าที่ เฝ้าทรัพย์อยู่หลายร้อยปี'],['พอเพียง','ทรัพย์ที่ได้มาด้วยความโลภไม่ใช่ของใครจะเอาไปได้'],['ขยัน','ทองดีทำมาหากินด้วยแรงตัวเองแม้ชีวิตลำบาก']],
+ nangram:[['เพียรพยายาม','ฝึกซ้อมรำมาอย่างหนักจนเป็นศิลปะชั้นครู'],['ใฝ่เรียนรู้','สืบทอดวิชานาฏศิลป์จากครูสู่ศิษย์'],['มีสัมมาคารวะ','เคารพครูและเวทีที่สืบมา']],
+ mayanang:[['มีสัมมาคารวะ','ไหว้ขอพรแม่ย่านางก่อนออกเรือทุกครั้ง'],['ขยัน','เอียดและลุงเพิ่มทำงานในทะเลอย่างขยันขันแข็ง']]
+};
+const virCount=v=>G.filter(g=>(VIR[g.id]||[]).some(x=>x[0]===v)).length;
+
 /* ---------------- helpers ---------------- */
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -459,7 +511,8 @@ function rowHtml(r){
 }
 
 /* ---------------- views ---------------- */
-const MENU=[['home','หน้าแรก'],['all','ผีทั้งหมด'],['video','มีวิดีโอ'],['list','รายการของฉัน']];
+const MENU=[['home','หน้าแรก'],['all','ผีทั้งหมด'],['video','มีวิดีโอ'],['vir','คุณธรรม'],['list','รายการของฉัน']];
+let virSel=null;
 let view='home',region='ทั้งหมด',query='',heroIdx=0,heroMuted=true,heroUserSet=false;
 const app=$('#app');
 
@@ -494,19 +547,35 @@ function gridPage(title,sub,items,withRegion){
    ${items.length?`<div class="grid">${items.map((g,i)=>cardHtml(g,i)).join('')}</div>`:`<div class="empty">ไม่พบผีที่ตรงกับเงื่อนไข</div>`}
   </div></div>${footerHtml()}`;
 }
+function virStrip(){
+  return `<section class="row vstrip"><div class="gut inner"><h2>คุณธรรมในเรื่องเล่าผี<span>การ์ดคุณธรรม 24 ประการ กดเพื่อดูว่าผีตนไหนสอนเรื่องนี้</span></h2>
+   <div class="vchips">${V.map(v=>{const n=virCount(v);return `<button class="vchip${n?'':' zero'}" data-vir="${v}">${v}${n?`<i>${n}</i>`:''}</button>`}).join('')}</div></div></section>`;
+}
+function virPage(){
+  const sel=virSel,items=sel?G.filter(g=>(VIR[g.id]||[]).some(x=>x[0]===sel)):[];
+  const empty=V.filter(v=>!virCount(v));
+  return `<div class="page gut"><div class="inner"><h1>คุณธรรมจริยธรรมในเรื่องเล่าผี</h1>
+   <p class="sub">การ์ดคุณธรรม 24 ประการ เลือกการ์ดเพื่อดูว่าผีตนไหนมีเรื่องเล่าที่สอนเรื่องนี้แทรกอยู่</p>
+   <div class="vgrid" role="group" aria-label="การ์ดคุณธรรม">${V.map(v=>{const n=virCount(v);return `<button class="vcard${n?'':' zero'}" data-vir="${v}" aria-pressed="${sel===v}"><small>การ์ด · คุณธรรม</small><b>${v}</b><span>${n?`${n} เรื่อง`:'ยังไม่มีเรื่อง'}</span></button>`}).join('')}</div>
+   ${sel?`<h2 class="vh">${sel}<span>${items.length?`พบใน ${items.length} เรื่อง`:'ยังไม่มีเรื่องที่แทรกคุณธรรมข้อนี้'}</span></h2>
+     ${items.length?`<div class="grid">${items.map((g,i)=>cardHtml(g,i)).join('')}</div><div class="vwhy">${items.map(g=>{const x=VIR[g.id].find(y=>y[0]===sel);return `<p><b>${g.name}</b> ${x[1]}</p>`}).join('')}</div>`:`<div class="empty">เตรียมแทรกในเรื่องที่จะปรับต่อไป</div>`}`
+   :`<p class="vnote">${empty.length?`ยังไม่มีเรื่องไหนแทรก: ${empty.join(' · ')}`:'ทุกข้อมีเรื่องเล่าแล้ว'}</p>`}
+  </div></div>${footerHtml()}`;
+}
 function render(){
   renderMenu();
   stopHeroObs();
-  if(query){const q=query.toLowerCase();const items=G.filter(g=>(g.name+g.en+g.kind+g.where+g.region).toLowerCase().includes(q));
+  if(query){const q=query.toLowerCase();const items=G.filter(g=>(g.name+g.en+g.kind+g.where+g.region+(VIR[g.id]||[]).map(x=>x[0]).join('')).toLowerCase().includes(q));
     app.innerHTML=gridPage(`ผลการค้นหา "${query}"`,`พบ ${items.length} ตัว`,items,false);}
   else if(view==='home'){
-    app.innerHTML=heroHtml()+`<main>${ROWS.map(rowHtml).join('')}</main>`+footerHtml();
+    app.innerHTML=heroHtml()+`<main>${ROWS.map(rowHtml).join('')}${virStrip()}</main>`+footerHtml();
     setupHero();setupRails();
   }
   else if(view==='all'){const items=G.filter(g=>region==='ทั้งหมด'||g.region===region);
     app.innerHTML=gridPage('ผีทั้งหมด',`ผีไทย ${G.length} ตัว กรองตามภาคที่เล่าต่อกันมา`,items,true);}
   else if(view==='video'){const items=G.filter(g=>g.video);
     app.innerHTML=gridPage('ผีที่มีวิดีโอแล้ว',`${items.length} ตัวที่ทำวิดีโอเสร็จ ตัวอื่นกำลังทยอยทำ ดูภาพคนและผีเทียบกันได้ในหน้ารายละเอียด`,items,false);}
+  else if(view==='vir'){app.innerHTML=virPage();}
   else if(view==='list'){const items=LIST.map(id=>BY[id]).filter(Boolean);
     app.innerHTML=gridPage('รายการของฉัน','ผีที่คุณกดเก็บไว้ จำไว้ในเบราว์เซอร์นี้',items,false);
     if(!items.length)$('.empty').textContent='ยังไม่มีผีในรายการ กดไอคอนหัวใจที่การ์ดเพื่อเก็บไว้';}
@@ -585,6 +654,7 @@ function sheetHtml(g){
           <div class="mood"><h3>${ICON.sun}ตอนกลางวัน</h3>${g.human}</div>
           <div class="mood night"><h3>${ICON.moon}ตอนกลางคืน</h3>${g.ghost}</div>
         </div>
+        ${(VIR[g.id]||[]).length?`<div class="vblock"><h3>คุณธรรมในเรื่องนี้</h3>${VIR[g.id].map(x=>`<div class="vrow"><button class="vchip" data-vir="${x[0]}">${x[0]}</button><span>${x[1]}</span></div>`).join('')}</div>`:''}
         <div class="facts">
           <div><h3>ที่มา</h3><p>${g.origin}</p></div>
           <div><h3>ความเชื่อ</h3><p>${g.belief}</p></div>
@@ -676,6 +746,7 @@ document.addEventListener('click',e=>{
   if(t.closest('#sheetX')||t===$('#modal')){closeSheet();return}
   if(t.closest('#listBtn')){const id=cur.id;LIST=inList(id)?LIST.filter(x=>x!==id):[...LIST,id];saveList();setListBtn();renderMenu();document.querySelectorAll(`[data-heart="${id}"]`).forEach(h=>h.classList.toggle('on',inList(id)));return}
   const sv=t.closest('[data-sv]');if(sv){setSheetView(sv.dataset.sv,true);return}
+  const vr=t.closest('[data-vir]');if(vr){const n=vr.dataset.vir;if(!$('#modal').hidden)closeSheet();query='';$('#q').value='';view='vir';virSel=(view==='vir'&&virSel===n&&vr.classList.contains('vcard'))?null:n;render();return}
   const mv=t.closest('[data-v]');if(mv){query='';$('#q').value='';$('#search').classList.remove('open');view=mv.dataset.v;render();return}
   const rg=t.closest('[data-region]');if(rg){region=rg.dataset.region;render();return}
   const hr=t.closest('[data-hero]');if(hr){heroIdx=+hr.dataset.hero;render();return}
