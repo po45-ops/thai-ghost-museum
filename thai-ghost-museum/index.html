@@ -4,7 +4,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pridi:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pridi:wght@500;700&family=Sriracha&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: Netflix-style browse. Sticky nav, a hero billboard with the featured ghost video, horizontal rows of portrait cards that flip human to ghost on hover, and a detail sheet with video or a human/ghost reveal slider. One committed dark look: a museum hall at night, lamp-amber brand, each ghost brings its own spirit colour. */
 :root{
@@ -38,6 +38,15 @@ img{display:block}
 .nav.solid{background:rgba(12,10,9,.96);box-shadow:0 1px 0 var(--line)}
 .nav .inner{display:flex;align-items:center;gap:22px;height:60px}
 .logo{font-family:var(--display);font-weight:700;font-size:21px;color:var(--lamp);letter-spacing:.01em;white-space:nowrap}
+.logo{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1;gap:3px;text-align:left}
+.logo .gt{font-family:'Sriracha','Pridi',cursive;font-weight:400;font-size:30px;letter-spacing:.01em;line-height:1.05;background:linear-gradient(180deg,#ff5a4d 0%,#d3171e 45%,#7a0508 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 1px 0 #1a0000) drop-shadow(0 0 8px rgba(210,20,30,.55));animation:gtflick 6s infinite}
+.logo .lx{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--lamp);text-transform:uppercase}
+.logo .lx::before,.logo .lx::after{content:"";height:1px;width:14px;background:linear-gradient(90deg,transparent,var(--lamp))}
+.logo .lx::after{background:linear-gradient(270deg,transparent,var(--lamp))}
+.logo .lx i{display:none}
+@keyframes gtflick{0%,19%,23%,60%,64%,100%{opacity:1}21%{opacity:.6}62%{opacity:.75}66%{opacity:.45}68%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.logo .gt{animation:none}}
+@media (max-width:560px){.logo .gt{font-size:23px}.logo .lx{font-size:9.5px;letter-spacing:.1em}}
 .menu{display:flex;gap:4px;min-width:0;overflow-x:auto;scrollbar-width:none;flex:1}
 .menu::-webkit-scrollbar{display:none}
 .menu button{padding:6px 12px;border-radius:999px;color:var(--muted);font-weight:500;font-size:14.5px;white-space:nowrap;transition:color .2s}
@@ -239,7 +248,7 @@ footer p{margin:6px 0 0;max-width:80ch}
 </head><body>
 <header class="nav" id="nav">
   <div class="inner gut">
-    <button class="logo" id="logo" aria-label="พิพิธภัณฑ์ผีไทย กลับหน้าแรก">พิพิธภัณฑ์ผีไทย</button>
+    <button class="logo" id="logo" aria-label="พิพิธภัณฑ์ผีไทย x คุณธรรมจริยธรรม กลับหน้าแรก"><span class="gt">พิพิธภัณฑ์ผีไทย</span><span class="lx">x คุณธรรมจริยธรรม</span></button>
     <nav class="menu" id="menu" aria-label="เมนูหลัก"></nav>
     <div class="search" id="search">
       <button id="sBtn" aria-label="ค้นหาผี"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button>
